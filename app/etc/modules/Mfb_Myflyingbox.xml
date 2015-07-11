@@ -23,6 +23,7 @@
             <codePool>local</codePool>
             <depends>
                 <Mage_Core />
+                <Mage_Shipping />
              </depends>
         </Mfb_Myflyingbox>
     </modules>

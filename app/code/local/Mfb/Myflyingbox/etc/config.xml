@@ -106,4 +106,38 @@
             </adminhtml>
         </routers>
     </admin>
+    <!-- Default configuration -->
+  <default>
+      <carriers>
+          <mfb_myflyingbox>
+              <active>1</active>
+              <!--
+                   This configuration should not be made visible
+                   to the administrator, because it specifies
+                   the model to be used for this carrier.
+              -->
+              <model>mfb_myflyingbox/carrier</model>
+              <!--
+                  The title as referenced in the carrier class
+              -->
+              <title>MFB Myflyingbox</title>
+              <!--
+                  The sort order specifies the position that
+                  this carrier appears relative to the other
+                  carriers available in checkout.
+              -->
+              <sort_order>10</sort_order>
+              <!--
+                  Out of the box, Magento offers shipping
+                  carriers the ability to restrict themselves
+                  to specific countries. For this configuration
+                  option, 0 means allow all countries available,
+                  and 1 means allow all countries specified
+                  in the country list that we will add later
+                  in system.xml
+              -->
+              <sallowspecific>0</sallowspecific>
+          </mfb_myflyingbox>
+      </carriers>
+  </default>
 </config>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <sections>
+        <carriers translate="label" module="shipping">
+            <groups>
+                <mfb_myflyingbox translate="label">
+                    <label>MyFlyingBox</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>2</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+                        
+                        <api_login translate="label">
+                          <label>MFB API login</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>2</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </api_login>
+
+                        <api_password translate="label">
+                          <label>MFB API Password</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>3</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </api_password>
+
+                        <api_env translate="label">
+                          <label>MFB API Password</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>4</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </api_env>
+                        
+                        <api_env translate="label">
+                          <label>Environment</label>
+                          <frontend_type>select</frontend_type>
+                          <sort_order>5</sort_order>
+                          <source_model>mfb_myflyingbox/adminhtml_fieldtype_environment</source_model>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>0</show_in_store>
+                        </api_env>
+
+                        <shipper_name translate="label">
+                          <label>Shipper name</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>6</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </shipper_name>
+
+                        <shipper_company translate="label">
+                          <label>Shipper company</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>7</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </shipper_company>
+                        
+                        <shipper_street translate="label">
+                          <label>Street</label>
+                          <comment></comment>
+                          <frontend_type>textarea</frontend_type>
+                          <sort_order>8</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </shipper_street>
+                        
+                        <shipper_city translate="label">
+                          <label>City</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>9</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </shipper_city>
+                        
+                        <shipper_postcode translate="label">
+                          <label>Postcode</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>10</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry</validate>
+                        </shipper_postcode>
+                        
+                        <shipper_country translate="label">
+                          <label>Country</label>
+                          <frontend_type>select</frontend_type>
+                          <sort_order>11</sort_order>
+                          <source_model>adminhtml/system_config_source_country</source_model>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>0</show_in_store>
+                        </shipper_country>
+
+                        <shipper_phone translate="label">
+                          <label>Phone number</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>12</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry validate-phone</validate>
+                        </shipper_phone>
+                        
+                        <shipper_email translate="label">
+                          <label>Email address</label>
+                          <comment></comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>13</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                          <validate>required-entry validate-email</validate>
+                        </shipper_email>
+                        
+                    </fields>
+                 </mfb_myflyingbox>
+            </groups>
+        </carriers>
+    </sections>
+</config>
