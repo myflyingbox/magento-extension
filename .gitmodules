@@ -1,0 +1,3 @@
+[submodule "lib/Lce"]
+	path = lib/Lce
+	url = https://github.com/myflyingbox/php-lce.git
