@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Mfb_Myflyingbox extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       Mfb
+ * @package        Mfb_Myflyingbox
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <mfb_myflyingbox translate="title" module="mfb_myflyingbox">
+                                        <title>Myflyingbox</title>
+                                    </mfb_myflyingbox>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                    <sales>
+                        <children>
+                            <mfb_myflyingbox translate="title" module="mfb_myflyingbox">
+                                <title>MyFlyingBox</title>
+                                <children>
+                                    <dimension translate="title" module="mfb_myflyingbox">
+                                        <title>Dimension</title>
+                                        <sort_order>0</sort_order>
+                                    </dimension>
+                                    <shipment translate="title" module="mfb_myflyingbox">
+                                        <title>Shipment</title>
+                                        <sort_order>10</sort_order>
+                                    </shipment>
+                                    <quote translate="title" module="mfb_myflyingbox">
+                                        <title>Quote</title>
+                                        <sort_order>20</sort_order>
+                                    </quote>
+                                    <offer translate="title" module="mfb_myflyingbox">
+                                        <title>Offer</title>
+                                        <sort_order>30</sort_order>
+                                    </offer>
+                                    <parcel translate="title" module="mfb_myflyingbox">
+                                        <title>Parcel</title>
+                                        <sort_order>40</sort_order>
+                                    </parcel>
+                                    <service translate="title" module="mfb_myflyingbox">
+                                        <title>Service</title>
+                                        <sort_order>50</sort_order>
+                                    </service>
+                                </children>
+                            </mfb_myflyingbox>                        </children>
+                    </sales>
+
+                </children>
+            </admin>
+        </resources>
+    </acl>
+    <menu>
+        <sales>
+            <children>
+                <mfb_myflyingbox translate="title" module="mfb_myflyingbox">
+                    <title>MyFlyingBox</title>
+                    <sort_order>25</sort_order>
+                    <children>
+                        <dimension translate="title" module="mfb_myflyingbox">
+                            <title>Dimension</title>
+                            <action>adminhtml/myflyingbox_dimension</action>
+                            <sort_order>0</sort_order>
+                        </dimension>
+                        <shipment translate="title" module="mfb_myflyingbox">
+                            <title>Shipment</title>
+                            <action>adminhtml/myflyingbox_shipment</action>
+                            <sort_order>10</sort_order>
+                        </shipment>
+                        <quote translate="title" module="mfb_myflyingbox">
+                            <title>Quote</title>
+                            <action>adminhtml/myflyingbox_quote</action>
+                            <sort_order>20</sort_order>
+                        </quote>
+                        <offer translate="title" module="mfb_myflyingbox">
+                            <title>Offer</title>
+                            <action>adminhtml/myflyingbox_offer</action>
+                            <sort_order>30</sort_order>
+                        </offer>
+                        <parcel translate="title" module="mfb_myflyingbox">
+                            <title>Parcel</title>
+                            <action>adminhtml/myflyingbox_parcel</action>
+                            <sort_order>40</sort_order>
+                        </parcel>
+                        <service translate="title" module="mfb_myflyingbox">
+                            <title>Service</title>
+                            <action>adminhtml/myflyingbox_service</action>
+                            <sort_order>50</sort_order>
+                        </service>
+                    </children>
+                </mfb_myflyingbox>            </children>
+        </sales>
+
+    </menu>
+</config>

@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Mfb_Myflyingbox extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       Mfb
+ * @package        Mfb_Myflyingbox
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+-->
+<config>
+    <modules>
+        <Mfb_Myflyingbox>
+            <version>1.0.0</version>
+        </Mfb_Myflyingbox>
+    </modules>
+    <global>
+        <resources>
+            <mfb_myflyingbox_setup>
+                <setup>
+                    <module>Mfb_Myflyingbox</module>
+                    <class>Mfb_Myflyingbox_Model_Resource_Setup</class>
+                </setup>
+            </mfb_myflyingbox_setup>
+        </resources>
+        <blocks>
+            <mfb_myflyingbox>
+                <class>Mfb_Myflyingbox_Block</class>
+            </mfb_myflyingbox>
+        </blocks>
+        <helpers>
+            <mfb_myflyingbox>
+                <class>Mfb_Myflyingbox_Helper</class>
+            </mfb_myflyingbox>
+        </helpers>
+        <models>
+            <mfb_myflyingbox>
+                <class>Mfb_Myflyingbox_Model</class>
+                <resourceModel>mfb_myflyingbox_resource</resourceModel>
+            </mfb_myflyingbox>
+            <mfb_myflyingbox_resource>
+                <class>Mfb_Myflyingbox_Model_Resource</class>
+                <entities>
+                    <dimension>
+                        <table>mfb_myflyingbox_dimension</table>
+                    </dimension>
+                    <shipment>
+                        <table>mfb_myflyingbox_shipment</table>
+                    </shipment>
+                    <quote>
+                        <table>mfb_myflyingbox_quote</table>
+                    </quote>
+                    <offer>
+                        <table>mfb_myflyingbox_offer</table>
+                    </offer>
+                    <parcel>
+                        <table>mfb_myflyingbox_parcel</table>
+                    </parcel>
+                    <service>
+                        <table>mfb_myflyingbox_service</table>
+                    </service>
+                </entities>
+            </mfb_myflyingbox_resource>
+        </models>
+    </global>
+    <adminhtml>
+        <layout>
+            <updates>
+                <mfb_myflyingbox>
+                    <file>mfb_myflyingbox.xml</file>
+                </mfb_myflyingbox>
+            </updates>
+        </layout>
+        <translate>
+            <modules>
+                <Mfb_Myflyingbox>
+                    <files>
+                        <default>Mfb_Myflyingbox.csv</default>
+                    </files>
+                </Mfb_Myflyingbox>
+            </modules>
+        </translate>
+        <global_search>
+            <shipment>
+                <class>mfb_myflyingbox/adminhtml_search_shipment</class>
+                <acl>mfb_myflyingbox</acl>
+            </shipment>
+        </global_search>
+    </adminhtml>
+    <admin>
+        <routers>
+            <adminhtml>
+                <args>
+                    <modules>
+                        <Mfb_Myflyingbox before="Mage_Adminhtml">Mfb_Myflyingbox_Adminhtml</Mfb_Myflyingbox>
+                    </modules>
+                </args>
+            </adminhtml>
+        </routers>
+    </admin>
+</config>

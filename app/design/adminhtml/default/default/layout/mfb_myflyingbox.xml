@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Mfb_Myflyingbox extension
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the MIT License
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/mit-license.php
+ * 
+ * @category       Mfb
+ * @package        Mfb_Myflyingbox
+ * @copyright      Copyright (c) 2015
+ * @license        http://opensource.org/licenses/mit-license.php MIT License
+ */
+--> 
+<layout>
+    <adminhtml_myflyingbox_dimension_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/dimension</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_dimension" name="dimension" />
+
+        </reference>
+    </adminhtml_myflyingbox_dimension_index>
+    <adminhtml_myflyingbox_dimension_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="mfb_myflyingbox/adminhtml_dimension_grid" name="dimension_grid"/>
+        </block>
+    </adminhtml_myflyingbox_dimension_grid>
+    <!-- Dimension add/edit action -->
+    <adminhtml_myflyingbox_dimension_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/dimension</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_dimension_edit" name="dimension_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_dimension_edit_tabs" name="dimension_tabs"></block>
+        </reference>
+    </adminhtml_myflyingbox_dimension_edit>
+
+    <adminhtml_myflyingbox_shipment_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/shipment</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_shipment" name="shipment" />
+
+        </reference>
+    </adminhtml_myflyingbox_shipment_index>
+    <adminhtml_myflyingbox_shipment_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="mfb_myflyingbox/adminhtml_shipment_grid" name="shipment_grid"/>
+        </block>
+    </adminhtml_myflyingbox_shipment_grid>
+    <!-- Shipment add/edit action -->
+    <adminhtml_myflyingbox_shipment_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/shipment</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_shipment_edit" name="shipment_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_shipment_edit_tabs" name="shipment_tabs"></block>
+        </reference>
+    </adminhtml_myflyingbox_shipment_edit>
+
+    <adminhtml_myflyingbox_quote_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/quote</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_quote" name="quote" />
+
+        </reference>
+    </adminhtml_myflyingbox_quote_index>
+    <adminhtml_myflyingbox_quote_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="mfb_myflyingbox/adminhtml_quote_grid" name="quote_grid"/>
+        </block>
+    </adminhtml_myflyingbox_quote_grid>
+    <!-- Quote add/edit action -->
+    <adminhtml_myflyingbox_quote_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/quote</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_quote_edit" name="quote_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_quote_edit_tabs" name="quote_tabs"></block>
+        </reference>
+    </adminhtml_myflyingbox_quote_edit>
+
+    <adminhtml_myflyingbox_offer_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/offer</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_offer" name="offer" />
+
+        </reference>
+    </adminhtml_myflyingbox_offer_index>
+    <adminhtml_myflyingbox_offer_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="mfb_myflyingbox/adminhtml_offer_grid" name="offer_grid"/>
+        </block>
+    </adminhtml_myflyingbox_offer_grid>
+    <!-- Offer add/edit action -->
+    <adminhtml_myflyingbox_offer_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/offer</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_offer_edit" name="offer_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_offer_edit_tabs" name="offer_tabs"></block>
+        </reference>
+    </adminhtml_myflyingbox_offer_edit>
+
+    <adminhtml_myflyingbox_parcel_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/parcel</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_parcel" name="parcel" />
+
+        </reference>
+    </adminhtml_myflyingbox_parcel_index>
+    <adminhtml_myflyingbox_parcel_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="mfb_myflyingbox/adminhtml_parcel_grid" name="parcel_grid"/>
+        </block>
+    </adminhtml_myflyingbox_parcel_grid>
+    <!-- Parcel add/edit action -->
+    <adminhtml_myflyingbox_parcel_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/parcel</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_parcel_edit" name="parcel_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_parcel_edit_tabs" name="parcel_tabs"></block>
+        </reference>
+    </adminhtml_myflyingbox_parcel_edit>
+
+    <adminhtml_myflyingbox_service_index>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/service</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_service" name="service" />
+
+        </reference>
+    </adminhtml_myflyingbox_service_index>
+    <adminhtml_myflyingbox_service_grid>
+        <block type="core/text_list" name="root" output="toHtml">
+            <block type="mfb_myflyingbox/adminhtml_service_grid" name="service_grid"/>
+        </block>
+    </adminhtml_myflyingbox_service_grid>
+    <!-- Service add/edit action -->
+    <adminhtml_myflyingbox_service_edit>
+        <update handle="editor"/>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/service</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_service_edit" name="service_edit"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_service_edit_tabs" name="service_tabs"></block>
+        </reference>
+    </adminhtml_myflyingbox_service_edit>
+
+</layout>
