@@ -161,6 +161,62 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ServiceController extends Mfb_Myflyi
         $this->_redirect('*/*/');
     }
 
+    public function refreshAction()
+    {
+      $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+      $products = Lce\Resource\Product::findAll();
+      
+      $errors = false;
+      
+      $loaded_services = array();
+      
+      foreach ($products as $api_product) {
+        if (in_array($api_product->code, $loaded_services))
+          continue;
+      
+        $service = Mage::getModel('mfb_myflyingbox/service')->load($api_product->code, 'code');
+        
+        // We do not touch existing services
+        if (!$service->getId()) {
+        
+          $data = array(
+            'code' => $api_product->code,
+            'name' => $api_product->name,
+            'display_name' => $api_product->name,
+            'pickup' => $api_product->pick_up,
+            'relay' => $api_product->preset_delivery_location,
+            'status' => 0,
+            'flatrate_pricing' => false
+          );
+          
+          try {
+            $service->setData($data);
+            $service->save();
+            $loaded_services[] = $api_product->code;
+          } catch (Exception $e) {
+            $errors = true;
+          
+          }
+        }
+      }
+      
+      if ($errors) {
+        Mage::logException($e);
+        Mage::getSingleton('adminhtml/session')->addError(
+            Mage::helper('mfb_myflyingbox')->__('There was a problem some services.')
+        );
+        $this->_redirect('*/*/');
+        return;
+      } else {
+        Mage::getSingleton('adminhtml/session')->addSuccess(
+            Mage::helper('mfb_myflyingbox')->__('Services reloaded based on API data')
+        );
+        $this->_redirect('*/*/');
+        return;
+      }
+    }
+
+
     /**
      * delete service - action
      *

@@ -47,9 +47,9 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Code'),
                 'name'  => 'code',
-            'required'  => true,
-            'class' => 'required-entry',
-
+                'required'  => true,
+                'disabled' => true,
+                'class' => 'required-entry',
            )
         );
 
@@ -60,18 +60,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
                 'label' => Mage::helper('mfb_myflyingbox')->__('Name'),
                 'name'  => 'name',
             'required'  => true,
-            'class' => 'required-entry',
-
-           )
-        );
-
-        $fieldset->addField(
-            'display_name',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Display name'),
-                'name'  => 'display_name',
-            'required'  => true,
+            'disabled' => true,
             'class' => 'required-entry',
 
            )
@@ -84,6 +73,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
                 'label' => Mage::helper('mfb_myflyingbox')->__('Pickup'),
                 'name'  => 'pickup',
             'required'  => true,
+            'disabled' => true,
             'class' => 'required-entry',
 
             'values'=> array(
@@ -106,6 +96,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
                 'label' => Mage::helper('mfb_myflyingbox')->__('Relay'),
                 'name'  => 'relay',
             'required'  => true,
+            'disabled' => true,
             'class' => 'required-entry',
 
             'values'=> array(
@@ -118,30 +109,42 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
                     'label' => Mage::helper('mfb_myflyingbox')->__('No'),
                 ),
             ),
+           )
+        );
+
+
+        $fieldset->addField(
+            'display_name',
+            'text',
+            array(
+                'label' => Mage::helper('mfb_myflyingbox')->__('Display name'),
+                'name'  => 'display_name',
+            'required'  => true,
+            'class' => 'required-entry',
+
            )
         );
 
         $fieldset->addField(
-            'active',
-            'select',
+            'description',
+            'text',
             array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Active'),
-                'name'  => 'active',
-            'required'  => true,
-            'class' => 'required-entry',
+                'label' => Mage::helper('mfb_myflyingbox')->__('Service description'),
+                'name'  => 'description',
 
-            'values'=> array(
-                array(
-                    'value' => 1,
-                    'label' => Mage::helper('mfb_myflyingbox')->__('Yes'),
-                ),
-                array(
-                    'value' => 0,
-                    'label' => Mage::helper('mfb_myflyingbox')->__('No'),
-                ),
-            ),
            )
         );
+
+        $fieldset->addField(
+            'tracking_url',
+            'text',
+            array(
+                'label' => Mage::helper('mfb_myflyingbox')->__('Tracking URL'),
+                'name'  => 'tracking_url',
+
+           )
+        );
+
 
         $fieldset->addField(
             'flatrate_pricing',
@@ -164,6 +167,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             ),
            )
         );
+
 
         $fieldset->addField(
             'flatrate_pricelist',
@@ -192,30 +196,11 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Excluded countries/postcodes'),
                 'name'  => 'excluded_postcodes',
-            'note'	=> $this->__('Exclude the specified countries/postcodes, in the form 'FR-94 | FR-75020', one rule per line.'),
+            'note'	=> $this->__('Exclude the specified countries/postcodes, in the form FR-94 | FR-75020, one rule per line.'),
 
            )
         );
 
-        $fieldset->addField(
-            'description',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Service description'),
-                'name'  => 'description',
-
-           )
-        );
-
-        $fieldset->addField(
-            'tracking_url',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Tracking URL'),
-                'name'  => 'tracking_url',
-
-           )
-        );
         $fieldset->addField(
             'status',
             'select',

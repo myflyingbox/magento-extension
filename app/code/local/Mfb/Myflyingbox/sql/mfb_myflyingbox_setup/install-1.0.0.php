@@ -36,6 +36,14 @@ $table = $this->getConnection()
         'Dimension ID'
     )
     ->addColumn(
+        'order_id',
+        Varien_Db_Ddl_Table::TYPE_INTEGER, null,
+        array(
+            'unsigned'  => true,
+        ),
+        'Order ID'
+    )
+    ->addColumn(
         'weight_from',
         Varien_Db_Ddl_Table::TYPE_DECIMAL, '12,4',
         array(
@@ -649,14 +657,6 @@ $table = $this->getConnection()
             'nullable'  => false,
         ),
         'Relay'
-    )
-    ->addColumn(
-        'active',
-        Varien_Db_Ddl_Table::TYPE_SMALLINT, null,
-        array(
-            'nullable'  => false,
-        ),
-        'Active'
     )
     ->addColumn(
         'flatrate_pricing',

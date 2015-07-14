@@ -42,4 +42,25 @@ class Mfb_Myflyingbox_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return $converted;
     }
+    
+    
+    public function getApiInstance()
+    {
+      $carrier = Mage::getModel('mfb_myflyingbox/carrier');
+      require_once(Mage::getBaseDir('lib') . '/Lce/bootstrap.php');
+      
+      // Check is php-curl is available
+      if(!extension_loaded('curl')) Mage::log("php-curl does not seem te be installed on your system. Please contact your hosting provider. This extension is required for the module to work properly.");
+      
+      // API Environment
+      $env = $carrier->getConfigData('api_env');
+      if ($env != 'staging' && $env != 'production') $env = 'staging';
+      
+      // Initializing API lib
+      $api = Lce\Lce::configure($carrier->getConfigData('api_login'), $carrier->getConfigData('api_password'), $env);
+      $api->application = "magento-mfb";
+      $api->application_version = Mage::getConfig()->getNode()->modules->Mfb_Myflyingbox->version . " (Magento ". Mage::getVersion() .")";
+      
+      return $api;
+    }
 }

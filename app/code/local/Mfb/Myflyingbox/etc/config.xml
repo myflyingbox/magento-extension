@@ -79,6 +79,17 @@
                 </mfb_myflyingbox>
             </updates>
         </layout>
+        <events>
+            <adminhtml_widget_container_html_before>
+                <observers>
+                    <mfb_myflyingbox>
+                        <class>mfb_myflyingbox/observer</class>
+                        <type>singleton</type>
+                        <method>addOrderViewShipButton</method>
+                    </mfb_myflyingbox>
+                </observers>
+            </adminhtml_widget_container_html_before>
+        </events>
         <translate>
             <modules>
                 <Mfb_Myflyingbox>

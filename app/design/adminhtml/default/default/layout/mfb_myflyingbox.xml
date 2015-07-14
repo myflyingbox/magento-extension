@@ -209,4 +209,15 @@
         </reference>
     </adminhtml_myflyingbox_service_edit>
 
+    <adminhtml_sales_order_view>
+      <reference name="left">
+        <reference name="sales_order_tabs">
+            <block type="mfb_myflyingbox/adminhtml_order_edit_tab_shipments_grid" name="tab_mfb_shipments_grid" as="tab_mfb_shipments_grid" />
+          <action method="addTab">
+            <name>mfb_order_shipments</name>
+            <block>mfb_myflyingbox/adminhtml_order_edit_tab_shipments_grid</block>
+          </action>
+        </reference>
+      </reference>
+    </adminhtml_sales_order_view>
 </layout>

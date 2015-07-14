@@ -137,19 +137,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Grid extends Mage_Adminhtml_Block_
 
             )
         );
-        $this->addColumn(
-            'active',
-            array(
-                'header' => Mage::helper('mfb_myflyingbox')->__('Active'),
-                'index'  => 'active',
-                'type'    => 'options',
-                    'options'    => array(
-                    '1' => Mage::helper('mfb_myflyingbox')->__('Yes'),
-                    '0' => Mage::helper('mfb_myflyingbox')->__('No'),
-                )
 
-            )
-        );
         $this->addColumn(
             'flatrate_pricing',
             array(
@@ -302,26 +290,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Grid extends Mage_Adminhtml_Block_
                 )
             )
         );
-        $this->getMassactionBlock()->addItem(
-            'active',
-            array(
-                'label'      => Mage::helper('mfb_myflyingbox')->__('Change Active'),
-                'url'        => $this->getUrl('*/*/massActive', array('_current'=>true)),
-                'additional' => array(
-                    'flag_active' => array(
-                        'name'   => 'flag_active',
-                        'type'   => 'select',
-                        'class'  => 'required-entry',
-                        'label'  => Mage::helper('mfb_myflyingbox')->__('Active'),
-                        'values' => array(
-                                '1' => Mage::helper('mfb_myflyingbox')->__('Yes'),
-                                '0' => Mage::helper('mfb_myflyingbox')->__('No'),
-                            )
 
-                    )
-                )
-            )
-        );
         $this->getMassactionBlock()->addItem(
             'flatrate_pricing',
             array(

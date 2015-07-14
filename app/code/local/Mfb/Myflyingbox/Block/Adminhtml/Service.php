@@ -36,7 +36,16 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service extends Mage_Adminhtml_Block_Widge
         $this->_blockGroup         = 'mfb_myflyingbox';
         parent::__construct();
         $this->_headerText         = Mage::helper('mfb_myflyingbox')->__('Service');
-        $this->_updateButton('add', 'label', Mage::helper('mfb_myflyingbox')->__('Add Service'));
-
+        //$this->_updateButton('add', 'label', Mage::helper('mfb_myflyingbox')->__('Add Service'));
+        $this->_removeButton('add');
+        $this->_addButton(
+            'refresh_services',
+            array(
+                'label'     => Mage::helper('mfb_myflyingbox')->__('Refresh services from API'),
+                'onclick'   => "setLocation('{$this->getUrl('*/*/refresh')}')",
+                'class'     => ''
+            ),
+            100
+        );
     }
 }
