@@ -81,6 +81,26 @@
         </reference>
     </adminhtml_myflyingbox_shipment_edit>
 
+    <!-- Shipment add/edit action -->
+    <adminhtml_myflyingbox_shipment_view>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/shipment</menupath>
+            </action>
+        </reference>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_shipment_view" name="mfb_shipment_view"></block>
+        </reference>
+        <reference name="left">
+            <block type="mfb_myflyingbox/adminhtml_shipment_view_tabs" name="mfb_shipment_view_tabs">
+               <block type="mfb_myflyingbox/adminhtml_shipment_view_tab_info" name="shipment_info" template="mfb/myflyingbox/shipment/view/tab/info.phtml"></block>
+               <action method="addTab"><name>shipment_info</name><block>shipment_info</block></action>
+            </block>
+        </reference>
+    </adminhtml_myflyingbox_shipment_view>
+
+
+
     <adminhtml_myflyingbox_quote_index>
         <reference name="menu">
             <action method="setActive">

@@ -104,6 +104,20 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         $this->renderLayout();
     }
 
+    public function viewAction()
+    {
+        $this->_title($this->__('MyFlyingBox'))->_title($this->__('Shipments'));
+
+        $shipmentId    = $this->getRequest()->getParam('id');
+        $shipment      = $this->_initShipment();
+        if ($shipment) {
+            $this->loadLayout();
+            $this->renderLayout();
+        }
+    }
+
+
+
     /**
      * new shipment action
      *

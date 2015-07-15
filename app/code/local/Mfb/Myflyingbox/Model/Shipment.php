@@ -143,4 +143,23 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         return $values;
     }
     
+    public function getParentOrder()
+    {
+        if (!$this->hasData('_parent_order')) {
+            if (!$this->getOrderId()) {
+                return null;
+            } else {
+                $order = Mage::getModel('sales/order')
+                    ->load($this->getOrderId());
+                if ($order->getId()) {
+                    $this->setData('_parent_order', $order);
+                } else {
+                    $this->setData('_parent_order', null);
+                }
+            }
+        }
+        return $this->getData('_parent_order');
+    }
+    
+    
 }

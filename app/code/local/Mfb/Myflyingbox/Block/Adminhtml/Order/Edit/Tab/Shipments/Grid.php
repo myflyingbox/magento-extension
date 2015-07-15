@@ -208,7 +208,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Order_Edit_Tab_Shipments_Grid
 
     public function getRowUrl($row)
     {
-        return $this->getUrl('adminhtml/myflyingbox_shipment/edit', array('id' => $row->getId()));
+        return $this->getUrl('adminhtml/myflyingbox_shipment/view', array('id' => $row->getId()));
     }
 
 }
