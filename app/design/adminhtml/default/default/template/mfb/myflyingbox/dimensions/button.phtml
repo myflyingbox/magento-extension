@@ -1,0 +1,16 @@
+<div class="content-header">
+  <table cellspacing="0">
+    <tr>
+      <td><h3>Dimensions</h3></td>
+      <td class="form-buttons"><?php echo $this->getButtonsHtml(); ?></td>
+    </tr>
+  </table>
+</div>
+
+<div class="entry-edit">
+  <div class="fieldset">
+    <form action="<?php echo $this->getDimensionSaveUrl() ?>" method="post" id="dim_form" enctype="multipart/form-data">
+<?php echo $this->getBlockHtml('dimensionsLine')?>
+    </form>
+  </div>
+</div>

@@ -36,15 +36,15 @@ class Mfb_Myflyingbox_Model_Parcel_Attribute_Source_Currency extends Mage_Eav_Mo
     {
         $options =  array(
             array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('EUR'),
+                'label' => 'EUR',
                 'value' => 1
             ),
             array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('USD'),
+                'label' => 'USD',
                 'value' => 2
             ),
             array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('GBP'),
+                'label' => 'GBP',
                 'value' => 3
             ),
         );
@@ -93,5 +93,18 @@ class Mfb_Myflyingbox_Model_Parcel_Attribute_Source_Currency extends Mage_Eav_Mo
             }
         }
         return implode(', ', $texts);
+    }
+    
+    // Returns the ID of the currency, based on the currency code
+    public function getOptionValue($currency_code)
+    {
+        $options = $this->getOptionsArray();
+
+        foreach ($options as $value => $label) {
+          if ($label == $currency_code) {
+            return $value;
+          }
+        }
+        return false;
     }
 }

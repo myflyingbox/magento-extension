@@ -325,4 +325,54 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_DimensionController extends Mfb_Myfl
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/mfb_myflyingbox/dimension');
     }
+    
+    
+  public function configAction() 
+  {
+    // Load DB classes
+    $Dimensions = Mage::getModel("mfb_myflyingbox/dimension");
+    
+    $dims = $Dimensions->get_all();
+    
+    if ( count($dims) == 0) {
+      $Dimensions->load_defaults();
+      $dims = $Dimensions->get_all();
+    }
+    // load layout and put view values into 
+    $this->loadLayout();
+    $layout = $this->getLayout();
+    $block = $layout->getBlock('dimensionsLine');
+    $block->setData('dimensions', $dims);
+    $this->renderLayout();
+    Mage::getSingleton('core/session')->setDimsAction(false);
+  }
+  
+  public function configSaveAction() 
+  {
+    Mage::log("configSave action started!");
+    if($this->getRequest()->isPost()) 
+    {
+      Mage::log("POST request recognized.");
+      $Dimensions = Mage::getModel("mfb_myflyingbox/dimension");
+      
+      $Post = $this->getRequest()->getPost();
+      
+      $from = 0;
+      foreach($Dimensions->get_all() as $dimension) {
+        $data = array(
+          "weight_from" => $from,
+          "weight_to" => (float)$Post['weight_'.$dimension['entity_id']],
+          "length"    => (int)$Post['length_'.$dimension['entity_id']],
+          "width"     => (int)$Post['width_'.$dimension['entity_id']],
+          "height"    => (int)$Post['height_'.$dimension['entity_id']]
+        );
+        $Dimensions->load($dimension['entity_id'])->addData($data)->save();
+        $from = (float)$Post['weight_'.$dimension['entity_id']];
+      }
+    }
+    Mage::log("finished saving dimensions");
+    Mage::getSingleton('core/session')->setDimsAction(true);
+    $this->getResponse()->setRedirect($this->getUrl('*/myflyingbox_dimension/config'));
+  }
+  
 }

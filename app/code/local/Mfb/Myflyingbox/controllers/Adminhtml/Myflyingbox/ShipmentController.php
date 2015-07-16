@@ -103,6 +103,41 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         }
         $this->renderLayout();
     }
+    
+    // Automatically create shipment based on order
+    public function newAutoAction() {
+      $shipment = Mage::getModel('mfb_myflyingbox/shipment');
+      $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order_id'));
+      
+      $carrier = Mage::getModel('mfb_myflyingbox/carrier');
+      
+      $shipment->populateFromOrder( $order )->save();
+      if ($shipment->getId() > 0) {
+        // Shipment is created. Now we create a default parcel
+        // Value is stored in cents
+        $data["value"] = (int)($order->getSubtotal()*100);
+        $a = new Mfb_Myflyingbox_Model_Parcel_Attribute_Source_Currency();
+        $data["currency"] = $a->getOptionValue($order->getOrderCurrencyCode());
+        $data["shipment_id"] = $shipment->getId();
+        $data["weight"] = $order->getWeight();
+        $data["description"] = $carrier->getConfigData('default_parcel_description');
+        $data["country_of_origin"] = $carrier->getConfigData('default_country_of_origin');
+        
+        $dimension = Mage::getModel('mfb_myflyingbox/dimension')->getForWeight((float)$order->getWeight());
+        
+        $data["length"] = $dimension->getLength();
+        $data["width"] = $dimension->getWidth();
+        $data["height"] = $dimension->getHeight();
+        
+        $parcel = Mage::getModel('mfb_myflyingbox/parcel')
+                    ->addData($data)
+                    ->save();
+      }
+      
+      $this->_redirect('*/*/view', array('id' => $shipment->getId()));
+    }
+    
+    
 
     public function viewAction()
     {

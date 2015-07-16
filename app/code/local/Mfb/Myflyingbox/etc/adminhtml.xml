@@ -78,7 +78,7 @@
                     <children>
                         <dimension translate="title" module="mfb_myflyingbox">
                             <title>Dimension</title>
-                            <action>adminhtml/myflyingbox_dimension</action>
+                            <action>adminhtml/myflyingbox_dimension/config</action>
                             <sort_order>0</sort_order>
                         </dimension>
                         <shipment translate="title" module="mfb_myflyingbox">

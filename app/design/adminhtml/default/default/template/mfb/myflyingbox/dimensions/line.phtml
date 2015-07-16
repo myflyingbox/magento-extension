@@ -1,0 +1,42 @@
+
+<?php if($this->showdimmessage) { ?>
+<div id="messages"><ul class="messages"><li class="success-msg"><ul><li><span>Les dimensions ont été mises à jour.</span></li></ul></li></ul></div>
+<?php } ?>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Poids (jusqu'à, en kg)</th>
+      <th>Longueur</th>
+      <th>Largeur</th>
+      <th>Hauteur</th>
+    </tr>
+  </thead>
+  
+  <tbody>
+    <?php foreach ( $this->dimensions as $key => $dimension ) { ?>
+      <tr>
+        <td class=""><?php echo $dimension['entity_id']; ?></td>
+
+        <td class="dimension">
+          <input type="text" name="weight_<?php echo $dimension['entity_id']; ?>" id="weight_<?php echo $dimension['entity_id']; ?>" value="<?php echo $dimension['weight_to']; ?>" class="validate-number" /> <span>kg</span>
+        </td>
+
+        <td class="dimension">
+          <input type="text" name="length_<?php echo $dimension['entity_id']; ?>" id="length_<?php echo $dimension['entity_id']; ?>" value="<?php echo $dimension['length']; ?>" class="validate-digits" /> <span>cm</span>
+        </td>
+
+        <td class="dimension">
+          <input type="text" name="width_<?php echo $dimension['entity_id']; ?>" id="width_<?php echo $dimension['entity_id']; ?>" value="<?php echo $dimension['width']; ?>" class="validate-digits" /> <span>cm</span>
+        </td>
+
+        <td class="dimension">
+          <input type="text" name="height_<?php echo $dimension['entity_id']; ?>" id="height_<?php echo $dimension['entity_id']; ?>" value="<?php echo $dimension['height']; ?>" class="validate-digits" /> <span>cm</span>
+          <input type="hidden" name="id_<?php echo $dimension['entity_id']; ?>" id="id_<?php echo $dimension['entity_id']; ?>" value="<?php echo $dimension['entity_id']; ?>" />
+        </td>
+      </tr>
+    <?php } ?>
+  </tbody>
+</table>
+<input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />

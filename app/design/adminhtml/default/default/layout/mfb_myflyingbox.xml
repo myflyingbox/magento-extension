@@ -49,6 +49,20 @@
         </reference>
     </adminhtml_myflyingbox_dimension_edit>
 
+    <adminhtml_myflyingbox_dimension_config>
+        <reference name="menu">
+            <action method="setActive">
+                <menupath>sales/mfb_myflyingbox/dimension</menupath>
+            </action>
+        </reference>
+        <reference name="root">
+          <block type="core/template" name="content" template="mfb/myflyingbox/dimensions/table.phtml">
+            <block type="adminhtml/template" name="dimensionsLine" template="mfb/myflyingbox/dimensions/line.phtml" />
+            <block type="mfb_myflyingbox/adminhtml_dimension_table" name="buttonTop" template="mfb/myflyingbox/dimensions/button.phtml" />	  
+          </block>
+        </reference>
+    </adminhtml_myflyingbox_dimension_config>
+
     <adminhtml_myflyingbox_shipment_index>
         <reference name="menu">
             <action method="setActive">
@@ -60,6 +74,7 @@
 
         </reference>
     </adminhtml_myflyingbox_shipment_index>
+    
     <adminhtml_myflyingbox_shipment_grid>
         <block type="core/text_list" name="root" output="toHtml">
             <block type="mfb_myflyingbox/adminhtml_shipment_grid" name="shipment_grid"/>

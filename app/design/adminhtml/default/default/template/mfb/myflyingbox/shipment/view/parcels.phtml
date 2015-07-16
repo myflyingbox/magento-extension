@@ -30,20 +30,20 @@
       <form id="parcel-form" action="" method="post">
           <span class="field-row">
             <label for="parcel_length"><?php echo Mage::helper('mfb_myflyingbox')->__('Parcel dimensions/weight:');?></label>
-            <input id="parcel_length" type='text' class="input-text required-field validate-number" style="width: 50px;" name="parcel[length]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('length');?>"/>x
-            <input id="parcel_width" type='text' class="input-text required-field validate-number" style="width: 50px;"  name="parcel[width]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('width');?>"/>x
-            <input id="parcel_height" type='text' class="input-text required-field validate-number" style="width: 50px;"  name="parcel[height]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('height');?>"/>cm
+            <input id="parcel_length" type='text' class="input-text required-field validate-digits" style="width: 50px;" name="parcel[length]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('length');?>"/>x
+            <input id="parcel_width" type='text' class="input-text required-field validate-digits" style="width: 50px;"  name="parcel[width]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('width');?>"/>x
+            <input id="parcel_height" type='text' class="input-text required-field validate-digits" style="width: 50px;"  name="parcel[height]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('height');?>"/>cm
 
-            <input id="parcel_weight" type='text' class="input-text required-field validate-digits" style="width: 50px;"  name="parcel[weight]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('weight');?>"/>kg
+            <input id="parcel_weight" type='text' class="input-text required-field validate-number" style="width: 50px;"  name="parcel[weight]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('weight');?>"/>kg
           </span>
 
           <span class="field-row">
             <label for="parcel_description"><?php echo Mage::helper('mfb_myflyingbox')->__('Content description:');?></label>
-            <input id="parcel_description" type='text' class="input-text required-field validate-digits" style="width: 150px;"  name="parcel[description]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('content description');?>"/>
+            <input id="parcel_description" type='text' class="input-text required-field" style="width: 150px;"  name="parcel[description]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('content description');?>"/>
           </span>
           <span class="field-row">
             <label for="parcel_value"><?php echo Mage::helper('mfb_myflyingbox')->__('Content value:');?></label>
-            <input id="parcel_value" type='text' class="input-text required-field validate-digits" style="width: 50px;"  name="parcel[value]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('value');?>"/>
+            <input id="parcel_value" type='text' class="input-text required-field validate-number" style="width: 50px;"  name="parcel[value]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('value');?>"/>
             <select name="parcel[currency]">
               <option value="1">EUR (€)</option>
               <option value="2">USD ($)</option>
@@ -68,3 +68,6 @@
       </form>
     </div>
 </div>
+<script type="text/javascript">
+    var parcelsForm = new varienForm('parcel-form');
+</script>

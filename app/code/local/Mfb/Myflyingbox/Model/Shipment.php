@@ -166,6 +166,42 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         return $this->getData('_parent_order');
     }
     
+    public function populateFromOrder( $order ) {
+      $data = array();
+      $carrier = Mage::getModel('mfb_myflyingbox/carrier');
+      
+      $data['order_id'] = $order->getId();
+      
+      $data['shipper_name'] = $carrier->getConfigData('shipper_name');
+      $data['shipper_company'] = $carrier->getConfigData('shipper_company');
+      $data['shipper_street'] = $carrier->getConfigData('shipper_street');
+      $data['shipper_city'] = $carrier->getConfigData('shipper_city');
+      $data['shipper_state'] = $carrier->getConfigData('shipper_state');
+      $data['shipper_postal_code'] = $carrier->getConfigData('shipper_postcode');
+      $data['shipper_country'] = $carrier->getConfigData('shipper_country');
+      $data['shipper_phone'] = $carrier->getConfigData('shipper_phone');
+      $data['shipper_email'] = $carrier->getConfigData('shipper_email');
+      
+      $recipient = $order->getShippingAddress();
+      
+      $data['recipient_name'] = $recipient->getFirstname() . ' ' . $recipient->getLastname();
+      $data['recipient_company'] = $recipient->getCompany();
+      $data['recipient_street'] = implode('\n', $recipient->getStreet());
+      $data['recipient_city'] = $recipient->getCity();
+      if ( in_array( $recipient->getCompany(), ['US','CA']) ) {
+        $data['recipient_state'] = $recipient->getRegion();
+      }
+      $data['recipient_postal_code'] = $recipient->getPostcode();
+      $data['recipient_country'] = $recipient->getCountry();
+      $data['recipient_phone'] = $recipient->getTelephone();
+      $data['recipient_email'] = $recipient->getEmail();
+      
+      $this->setData($data);
+      
+      return $this; 
+    }
+    
+    
     // TODO: Customize when proper status support
     public function canEdit() {
       return true;
