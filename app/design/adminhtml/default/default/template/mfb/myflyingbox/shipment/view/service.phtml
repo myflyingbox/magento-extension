@@ -1,0 +1,40 @@
+<div id="shipment_service_block">
+<?php $shipment = $this->getShipment(); ?>
+
+    <?php if (!$shipment->getLatestQuote() && !$shipment->isBooked()) {
+      echo '<p>';
+      echo Mage::helper('mfb_myflyingbox')->__('No service available. Please check your shipment data.');
+      echo '</p>'; 
+      
+    } else if (!$shipment->isBooked()) {?>
+    
+    <form id="service-form" action="<?php echo $this->getSubmitUrl(); ?>" method="post">
+        <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+    
+        <span class="field-row">
+          <label for="offer_id"><?php echo Mage::helper('mfb_myflyingbox')->__('Select a service:');?></label>
+            <select name="offer_id">
+            <?php
+              foreach($shipment->getLatestQuote()->getOffers() as $offer) {
+                echo '<option value="'.$offer->getId().'"';
+                if ($this->getApiOfferUuid() == $offer->getApiOfferUuid()) echo ' selected';
+                echo '>'.$offer->getMfbProductCode().' - '.$offer->formattedPrice().'</option>';
+              }
+            ?>
+            </select>
+        </span>
+
+        <?php
+          foreach($shipment->getLatestQuote()->getOffers() as $offer) {
+            echo '<input type="hidden" name="offer_'.$offer->getId().'[offer_id]" value="'.$offer->getId().'"/>';
+          }
+        ?>
+          <div class="f-left">
+             <button id="book_service" type="submit" class="scalable save">
+                <?php echo Mage::helper('mfb_myflyingbox')->__('Book this service');?>
+            </button>
+          </div>
+    </form>
+    
+    <?php } ?>
+</div>

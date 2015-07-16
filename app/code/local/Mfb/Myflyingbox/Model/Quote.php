@@ -108,6 +108,10 @@ class Mfb_Myflyingbox_Model_Quote extends Mage_Core_Model_Abstract
         return $this->getData('_offer_collection');
     }
 
+    public function getOffers() {
+      return $this->getSelectedOffersCollection();
+    }
+
     /**
      * Retrieve parent 
      *

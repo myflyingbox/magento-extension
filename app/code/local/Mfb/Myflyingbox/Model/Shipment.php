@@ -107,6 +107,47 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         }
         return $this->getData('_quote_collection');
     }
+    
+    public function getLatestQuote() {
+    
+      if ( empty($this->getApiQuoteUuid()) ) {
+        return false;
+      }
+      
+      $res = Mage::getModel('mfb_myflyingbox/quote')->getCollection()
+                  ->addFieldToFilter("shipment_id", $this->getId())
+                  ->addFieldToFilter("api_quote_uuid", $this->getApiQuoteUuid())
+                  ->setOrder("created_at", "DESC")
+                  ->setPageSize(1)
+                  ->loadData()
+                  ->getData();
+      
+      if ( empty($res) ) {
+        return false;
+      }
+      return Mage::getModel('mfb_myflyingbox/quote')->load($res[0]['entity_id']);
+    }
+
+    public function getSelectedOffer() {
+    
+      if ( empty($this->getApiQuoteUuid()) || empty($this->getApiOfferUuid()) ) {
+        return false;
+      }
+      
+      $res = Mage::getModel('mfb_myflyingbox/offer')->getCollection()
+                  ->addFieldToFilter("shipment_id", $this->getId())
+                  ->addFieldToFilter("api_quote_uuid", $this->getApiQuoteUuid())
+                  ->setOrder("created_at", "DESC")
+                  ->setPageSize(1)
+                  ->loadData()
+                  ->getData();
+      
+      if ( empty($res) ) {
+        return false;
+      }
+      return Mage::getModel('mfb_myflyingbox/offer')->load($res[0]['entity_id']);
+    }
+
 
     /**
      * Retrieve  collection
@@ -204,7 +245,170 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     
     // TODO: Customize when proper status support
     public function canEdit() {
-      return true;
+      if ( !empty($this->getApiOrderUuid()) ) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
+  public function getNewQuote() {
+      
+      // Not proceeding unless the shipment is in draft state
+      if (!$this->canEdit()) return false;
+      
+      // If we requested a new quote, it means we have outdated data.
+      // We reset the data whatever happens next.
+      $this->setApiOfferUuid('');
+      $this->setApiQuoteUuid('');
+      
+      $parcels = array();
+      foreach( $this->getParcels() as $parcel ) {
+        $parcels[] = array(
+          'length' => $parcel->getLength(),
+          'width'  => $parcel->getWidth(),
+          'height'  => $parcel->getHeight(),
+          'weight'  => $parcel->getWeight()
+        );
+      }
+      
+      // No parcel? We stop now.
+      if ( empty($parcels) ) {
+        $this->save(); // Saving the emptied quote and offer uuids.
+        return false;
+      }
+      
+      $params = array(
+        'shipper' => array(
+          'city'         => $this->getShipperCity(),
+          'postal_code'  => $this->getShipperPostalCode(),
+          'country'      => $this->getShipperCountry(),
+        ),
+        'recipient' => array(
+          'city'         => $this->getRecipientCity(),
+          'postal_code'  => $this->getRecipientPostalCode(),
+          'country'      => $this->getRecipientCountry(),
+          'is_a_company' => false
+        ),
+        'parcels' => $parcels
+      );
+      $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+      $api_quote = Lce\Resource\Quote::request($params);
+      
+      $quote = Mage::getModel('mfb_myflyingbox/quote');
+      
+      $quote_data = array(
+        'api_quote_uuid' => $api_quote->id,
+        'shipment_id' => $this->getId()
+      );
+      
+      $quote->addData($quote_data)->save();
+      
+      $selected_offer = null;
+      
+      if ($quote->getId() > 0) {
+        // Now we create the offers
+
+        foreach($api_quote->offers as $k => $api_offer) {
+        
+          $offer = Mage::getModel('mfb_myflyingbox/offer');
+          
+          $offer_data = array(
+            'quote_id' => $quote->getId(),
+            'api_offer_uuid' => $api_offer->id,
+            'mfb_product_code' => $api_offer->product->code,
+            'mfb_product_name' => $api_offer->product->name,
+            'pickup' => $api_offer->product->pick_up,
+            'relay' => $api_offer->product->preset_delivery_location,
+            'collection_dates' => $api_offer->collection_dates,
+            'base_price_in_cents' => $api_offer->price->amount_in_cents,
+            'total_price_in_cents' => $api_offer->total_price->amount_in_cents,
+            'currency' => $api_offer->total_price->currency
+          );
+          
+          if ($api_offer->product->preset_delivery_location) {
+            // Getting available delivery locations immediately, to make things easier later on
+            $params = array(
+              'street' => $this->getRecipientStreet(),
+              'city' => $this->getRecipientCity()
+            );
+            $offer_data['delivery_locations'] = $api_offer->available_delivery_locations($params);
+          }
+          
+          $offer->addData($offer_data)->save();
+          
+          if ($this->getParentOrder()->getShippingMethod() == 'mfb_carrier_'.$offer->getMfbProductCode()) {
+            $selected_offer = $offer;
+          }
+          
+        }
+        $this->setApiQuoteUuid($quote->getApiQuoteUuid());
+        $this->setApiOfferUuid('');
+        if ($selected_offer) $this->setApiOfferUuid($selected_offer->getApiOfferUuid());
+      }
+      
+      $this->save();
+      
+      return $this;
+  }
+
+  public function isBooked() {
+    return !empty($this->getApiOrderUuid());
+  }
+
+  public function bookOrder($booking_data) {
+  
+    $offer = Mage::getModel('mfb_myflyingbox/offer')->load($booking_data['offer_id']);
+    
+    $params = array(
+      'shipper' => array(
+        'company' => $this->getShipperCompany(),
+        'name' => $this->getShipperName(),
+        'street' => $this->getShipperStreet(),
+        'city' => $this->getShipperCity(),
+        'state' => $this->getShipperState(),
+        'phone' => $this->getShipperPhone(),
+        'email' => $this->getShipperEmail()
+      ),
+      'recipient' => array(
+        'company' => $this->getRecipientCompany(),
+        'name' => $this->getRecipientName(),
+        'street' => $this->getRecipientStreet(),
+        'city' => $this->getRecipientCity(),
+        'state' => $this->getRecipientState(),
+        'phone' => $this->getRecipientPhone(),
+        'email' => $this->getRecipientEmail()
+      ),
+      'parcels' => array()
+    );
+    
+    if( $offer->getPickup() == true ) {
+      $params['shipper']['collection_date'] = $booking_data['collection_date'];
+    }
+
+    if( $this->getRelay() == true ) {
+      $params['recipient']['location_code'] = $booking_data['delivery_location_code'];
     }
     
+    foreach( $this->getParcels() as $parcel ) {
+      $params['parcels'][] = array('description' => $parcel->getDescription(), 'value' => $parcel->getValue()/100, 'currency' => $parcel->getCurrencyCode(), 'country_of_origin' => $parcel->getCountryOfOrigin());
+    }
+
+    // Placing the order on the API
+    $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+    $api_order = Lce\Resource\Order::place($offer->getApiOfferUuid(), $params);
+    
+    // Saving the order uuid
+    $this->setApiOrderUuid($api_order->id);
+    $this->setBookedAt(Mage::getSingleton('core/date')->gmtDate());
+    $this->setApiOfferUuid($offer->getApiOfferUuid()); // Making sure that we have the selected offer associated to the shipment, to use this information to display booking details
+    $this->save();
+
+    $i = 0;
+    foreach($this->getParcels() as $parcel) {
+      $parcel->setTrackingNumber($api_order->parcels[$i]->reference);
+      $parcel->save();
+    }
+  }
+
 }

@@ -411,6 +411,14 @@ $table = $this->getConnection()
         'MFB product code'
     )
     ->addColumn(
+        'mfb_product_name',
+        Varien_Db_Ddl_Table::TYPE_TEXT, 255,
+        array(
+            'nullable'  => false,
+        ),
+        'MFB product name'
+    )
+    ->addColumn(
         'pickup',
         Varien_Db_Ddl_Table::TYPE_SMALLINT, null,
         array(
@@ -450,6 +458,23 @@ $table = $this->getConnection()
         ),
         'Price curency'
     )
+    ->addColumn(
+        'collection_dates',
+        Varien_Db_Ddl_Table::TYPE_TEXT, '64k',
+        array(
+            'nullable'  => false,
+        ),
+        'Possible collection dates (serialized)'
+    )
+    ->addColumn(
+        'delivery_locations',
+        Varien_Db_Ddl_Table::TYPE_TEXT, '64k',
+        array(
+            'nullable'  => false,
+        ),
+        'Delivery locations (serialized)'
+    )
+    
     ->addColumn(
         'status',
         Varien_Db_Ddl_Table::TYPE_SMALLINT, null,
@@ -581,6 +606,14 @@ $table = $this->getConnection()
             'nullable'  => false,
         ),
         'Country of origin'
+    )
+    ->addColumn(
+        'tracking_number',
+        Varien_Db_Ddl_Table::TYPE_TEXT, 255,
+        array(
+            'nullable'  => false,
+        ),
+        'Tracking number'
     )
     ->addColumn(
         'status',

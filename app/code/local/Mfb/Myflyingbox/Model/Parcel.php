@@ -141,4 +141,9 @@ class Mfb_Myflyingbox_Model_Parcel extends Mage_Core_Model_Abstract
       return $symbols[$attr->getOptionText($currency)];
     }
     
+    public function getCurrencyCode() {
+      $attr = new Mfb_Myflyingbox_Model_Parcel_Attribute_Source_Currency();
+      return $attr->getOptionText($this->getCurrency());
+    }
+    
 }

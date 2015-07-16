@@ -132,6 +132,9 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         $parcel = Mage::getModel('mfb_myflyingbox/parcel')
                     ->addData($data)
                     ->save();
+        
+        // Finally, we load a fresh quote
+        $shipment->getNewQuote();
       }
       
       $this->_redirect('*/*/view', array('id' => $shipment->getId()));
@@ -180,6 +183,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 $shipment = $this->_initShipment();
                 $shipment->addData($data);
                 $shipment->save();
+                $shipment->getNewQuote();
+                
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     Mage::helper('mfb_myflyingbox')->__('Shipment was successfully saved')
                 );
@@ -188,6 +193,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                     $this->_redirect('*/*/view', array('id' => $shipment->getId()));
                     return;
                 }
+                
                 $this->_redirect('*/*/view', array('id' => $shipment->getId()));
                 return;
             } catch (Mage_Core_Exception $e) {
@@ -468,25 +474,17 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                             ->addData($data)
                             ->save();
 
-                $this->loadLayout('empty');
-                $this->renderLayout();
+                $shipment->getNewQuote();
+                
+                $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
             }
             catch (Mage_Core_Exception $e) {
-                $response = array(
-                    'error'     => true,
-                    'message'   => $e->getMessage(),
-                );
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
             catch (Exception $e) {
-                $response = array(
-                    'error'     => true,
-                    'message'   => $this->__('Cannot add parcel to shipment')
-                );
+                Mage::getSingleton('adminhtml/session')->addError($this->__('Cannot add parcel to shipment'));
             }
-            if (is_array($response)) {
-                $response = Mage::helper('core')->jsonEncode($response);
-                $this->getResponse()->setBody($response);
-            }
+            $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
         }
     }
     public function deleteParcelAction()
@@ -498,26 +496,44 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 $parcel = Mage::getModel('mfb_myflyingbox/parcel')
                             ->setId($this->getRequest()->getParam('parcel_id'))->delete();
 
-                $this->loadLayout('empty');
-                $this->renderLayout();
+                $shipment->getNewQuote();
+
+                $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
             }
             catch (Mage_Core_Exception $e) {
-                $response = array(
-                    'error'     => true,
-                    'message'   => $e->getMessage(),
-                );
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
             catch (Exception $e) {
-                $response = array(
-                    'error'     => true,
-                    'message'   => $this->__('Cannot delete parcel from shipment')
-                );
+                Mage::getSingleton('adminhtml/session')->addError($this->__('Cannot delete parcel from shipment'));
             }
-            if (is_array($response)) {
-                $response = Mage::helper('core')->jsonEncode($response);
-                $this->getResponse()->setBody($response);
-            }
+            $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
         }
     }
-    
+
+
+    public function bookOrderAction()
+    {
+        if ($shipment = $this->_initShipment()) {
+            try {
+                $response = false;
+              
+                $offer = Mage::getModel('mfb_myflyingbox/offer')->load($this->getRequest()->getParam('offer_id'));
+                
+                // Extracting relevant booking data (collection date, relay, offer id)
+                $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
+                
+                $shipment->bookOrder($booking_data);
+
+                $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
+            }
+            catch (Mage_Core_Exception $e) {
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+            }
+            catch (Exception $e) {
+                Mage::getSingleton('adminhtml/session')->addError($this->__('Cannot delete parcel from shipment'));
+            }
+            $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
+        }
+    }
+
 }

@@ -126,4 +126,10 @@ class Mfb_Myflyingbox_Model_Offer extends Mage_Core_Model_Abstract
         return $values;
     }
     
+    public function formattedPrice() {
+      return ($this->getBasePriceInCents() / 100).' '.$this->getCurrency();
+    }
+
+    
+    
 }

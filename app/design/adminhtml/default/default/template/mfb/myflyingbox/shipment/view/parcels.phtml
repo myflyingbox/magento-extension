@@ -4,11 +4,17 @@
     <?php foreach($this->getShipment()->getParcels() as $parcel) {
     
       echo "<p>";
+      
+      if ($this->getShipment()->canEdit()) {
       ?>
-      <button id="delete_parcel_<?php echo $parcel->getId();?>" type="button" class="scalable delete" onclick="submitAndReloadArea($('shipment_parcels_block').parentNode, '<?php echo $this->getDeleteUrl($parcel->getId()); ?>')">
+      <form action="<?php echo $this->getDeleteUrl($parcel->getId()); ?>" method="POST">
+      <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+      <button id="delete_parcel_<?php echo $parcel->getId();?>" type="submit" class="scalable delete">
         <?php echo Mage::helper('mfb_myflyingbox')->__('Delete');?>
       </button>
+      </form>
       <?php
+      }
       echo $parcel->getLength()."x".$parcel->getWidth()."x".$parcel->getHeight()."cm, ".$parcel->getWeight()."kg";
       echo " | ";
       echo $parcel->getFormattedValue();
@@ -23,11 +29,15 @@
     }?>
   
   </div>
+  <?php if ($this->getShipment()->canEdit()) { ?>
   <br/><br/>
     <div id="parcel_form" class="shipment-parcel-form">
     <p><strong><?php echo Mage::helper('mfb_myflyingbox')->__('Add another parcel:');?></strong></p>
     
-      <form id="parcel-form" action="" method="post">
+    
+      <form id="parcel-form" action="<?php echo $this->getSubmitUrl(); ?>" method="post">
+        <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
+        
           <span class="field-row">
             <label for="parcel_length"><?php echo Mage::helper('mfb_myflyingbox')->__('Parcel dimensions/weight:');?></label>
             <input id="parcel_length" type='text' class="input-text required-field validate-digits" style="width: 50px;" name="parcel[length]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('length');?>"/>x
@@ -63,10 +73,13 @@
           </span>
           
           <div class="f-right">
-              <?php echo $this->getChildHtml('submit_button') ?>
+             <button id="add_new_parcel" type="submit" class="scalable save">
+                <?php echo Mage::helper('mfb_myflyingbox')->__('Add new parcel');?>
+            </button>
           </div>
       </form>
     </div>
+    <?php }?>
 </div>
 <script type="text/javascript">
     var parcelsForm = new varienForm('parcel-form');

@@ -110,6 +110,7 @@
             <block type="mfb_myflyingbox/adminhtml_shipment_view_tabs" name="mfb_shipment_view_tabs">
                <block type="mfb_myflyingbox/adminhtml_shipment_view_tab_info" name="shipment_info" template="mfb/myflyingbox/shipment/view/tab/info.phtml">
                  <block type="mfb_myflyingbox/adminhtml_shipment_view_parcels" name="shipment_parcels" template="mfb/myflyingbox/shipment/view/parcels.phtml"></block>
+                 <block type="mfb_myflyingbox/adminhtml_shipment_view_service" name="shipment_service" template="mfb/myflyingbox/shipment/view/service.phtml"></block>
                </block>
                <action method="addTab"><name>shipment_info</name><block>shipment_info</block></action>
             </block>

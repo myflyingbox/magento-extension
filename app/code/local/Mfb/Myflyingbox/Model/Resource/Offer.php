@@ -24,6 +24,8 @@
 class Mfb_Myflyingbox_Model_Resource_Offer extends Mage_Core_Model_Resource_Db_Abstract
 {
 
+
+
     /**
      * constructor
      *
@@ -33,5 +35,10 @@ class Mfb_Myflyingbox_Model_Resource_Offer extends Mage_Core_Model_Resource_Db_A
     public function _construct()
     {
         $this->_init('mfb_myflyingbox/offer', 'entity_id');
+        
+        $this->_serializableFields = array(
+            'collection_dates' => array(null, array()),
+            'delivery_locations' => array(null, array())
+        );
     }
 }
