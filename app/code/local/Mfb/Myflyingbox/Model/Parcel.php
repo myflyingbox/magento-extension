@@ -126,4 +126,19 @@ class Mfb_Myflyingbox_Model_Parcel extends Mage_Core_Model_Abstract
         return $values;
     }
     
+    public function getFormattedValue() {
+      return $this->getValue() / 100 .' '. $this->getCurrencySymbol($this->getCurrency());      
+    }
+    
+    public function getCurrencySymbol($currency) {
+      $attr = new Mfb_Myflyingbox_Model_Parcel_Attribute_Source_Currency();
+      $symbols = array(
+        'EUR' => '€',
+        'USD' => '$',
+        'GBP' => '£'
+      );
+      
+      return $symbols[$attr->getOptionText($currency)];
+    }
+    
 }

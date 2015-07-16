@@ -36,72 +36,12 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_Edit_Tab_Form extends Mage_Adminh
         $form->setHtmlIdPrefix('shipment_');
         $form->setFieldNameSuffix('shipment');
         $this->setForm($form);
+        
         $fieldset = $form->addFieldset(
-            'shipment_form',
-            array('legend' => Mage::helper('mfb_myflyingbox')->__('Shipment'))
+            'shipment_form_shipper',
+            array('legend' => Mage::helper('mfb_myflyingbox')->__('Shipper information'))
         );
 
-        $fieldset->addField(
-            'api_quote_uuid',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('API Quote ID'),
-                'name'  => 'api_quote_uuid',
-
-           )
-        );
-
-        $fieldset->addField(
-            'api_offer_uuid',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('API offer UUID'),
-                'name'  => 'api_offer_uuid',
-
-           )
-        );
-
-        $fieldset->addField(
-            'api_order_uuid',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('API order uuid'),
-                'name'  => 'api_order_uuid',
-
-           )
-        );
-
-        $fieldset->addField(
-            'collection_date',
-            'date',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Pickup date'),
-                'name'  => 'collection_date',
-
-            'image' => $this->getSkinUrl('images/grid-cal.gif'),
-            'format'  => Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT),
-           )
-        );
-
-        $fieldset->addField(
-            'relay_delivery_code',
-            'text',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Relay delivery code'),
-                'name'  => 'relay_delivery_code',
-
-           )
-        );
-
-        $fieldset->addField(
-            'relay_delivery_address',
-            'textarea',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Relay delivery address'),
-                'name'  => 'relay_delivery_address',
-
-           )
-        );
 
         $fieldset->addField(
             'shipper_name',
@@ -172,11 +112,11 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_Edit_Tab_Form extends Mage_Adminh
         );
 
         $fieldset->addField(
-            'sihpper_country',
+            'shipper_country',
             'select',
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Shipper country'),
-                'name'  => 'sihpper_country',
+                'name'  => 'shipper_country',
             'required'  => true,
             'class' => 'required-entry',
 
@@ -218,6 +158,12 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_Edit_Tab_Form extends Mage_Adminh
             'class' => 'required-entry',
 
            )
+        );
+
+
+        $fieldset = $form->addFieldset(
+            'shipment_form_recipient',
+            array('legend' => Mage::helper('mfb_myflyingbox')->__('Receiver information'))
         );
 
         $fieldset->addField(
@@ -313,35 +259,6 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_Edit_Tab_Form extends Mage_Adminh
            )
         );
 
-        $fieldset->addField(
-            'booked_at',
-            'date',
-            array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Date of booking'),
-                'name'  => 'booked_at',
-
-            'image' => $this->getSkinUrl('images/grid-cal.gif'),
-            'format'  => Mage::app()->getLocale()->getDateFormat(Mage_Core_Model_Locale::FORMAT_TYPE_SHORT),
-           )
-        );
-        $fieldset->addField(
-            'status',
-            'select',
-            array(
-                'label'  => Mage::helper('mfb_myflyingbox')->__('Status'),
-                'name'   => 'status',
-                'values' => array(
-                    array(
-                        'value' => 1,
-                        'label' => Mage::helper('mfb_myflyingbox')->__('Enabled'),
-                    ),
-                    array(
-                        'value' => 0,
-                        'label' => Mage::helper('mfb_myflyingbox')->__('Disabled'),
-                    ),
-                ),
-            )
-        );
         $formValues = Mage::registry('current_shipment')->getDefaultValues();
         if (!is_array($formValues)) {
             $formValues = array();

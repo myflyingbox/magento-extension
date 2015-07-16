@@ -150,10 +150,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 );
                 Mage::getSingleton('adminhtml/session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', array('id' => $shipment->getId()));
+                    $this->_redirect('*/*/view', array('id' => $shipment->getId()));
                     return;
                 }
-                $this->_redirect('*/*/');
+                $this->_redirect('*/*/view', array('id' => $shipment->getId()));
                 return;
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -173,7 +173,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         Mage::getSingleton('adminhtml/session')->addError(
             Mage::helper('mfb_myflyingbox')->__('Unable to find shipment to save.')
         );
-        $this->_redirect('*/*/');
+        $this->_redirect('*/*/view', array('id' => $shipment->getId()));
     }
 
     /**
@@ -302,7 +302,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             try {
                 foreach ($shipmentIds as $shipmentId) {
                 $shipment = Mage::getSingleton('mfb_myflyingbox/shipment')->load($shipmentId)
-                    ->setSihpperCountry($this->getRequest()->getParam('flag_sihpper_country'))
+                    ->setShipperCountry($this->getRequest()->getParam('flag_shipper_country'))
                     ->setIsMassupdate(true)
                     ->save();
                 }
@@ -414,4 +414,75 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/mfb_myflyingbox/shipment');
     }
+    
+    /**
+     * Add parcel to shipment
+     */
+    public function addParcelAction()
+    {
+        if ($shipment = $this->_initShipment()) {
+            try {
+                $response = false;
+                $data = $this->getRequest()->getPost('parcel');
+                
+                // Value is stored in cents
+                $data["value"] = (int)($data["value"]*100);
+                $data["shipment_id"] = $shipment->getId();
+                
+                $parcel = Mage::getModel('mfb_myflyingbox/parcel')
+                            ->addData($data)
+                            ->save();
+
+                $this->loadLayout('empty');
+                $this->renderLayout();
+            }
+            catch (Mage_Core_Exception $e) {
+                $response = array(
+                    'error'     => true,
+                    'message'   => $e->getMessage(),
+                );
+            }
+            catch (Exception $e) {
+                $response = array(
+                    'error'     => true,
+                    'message'   => $this->__('Cannot add parcel to shipment')
+                );
+            }
+            if (is_array($response)) {
+                $response = Mage::helper('core')->jsonEncode($response);
+                $this->getResponse()->setBody($response);
+            }
+        }
+    }
+    public function deleteParcelAction()
+    {
+        if ($shipment = $this->_initShipment() && $this->getRequest()->getParam('parcel_id') > 0) {
+            try {
+                $response = false;
+              
+                $parcel = Mage::getModel('mfb_myflyingbox/parcel')
+                            ->setId($this->getRequest()->getParam('parcel_id'))->delete();
+
+                $this->loadLayout('empty');
+                $this->renderLayout();
+            }
+            catch (Mage_Core_Exception $e) {
+                $response = array(
+                    'error'     => true,
+                    'message'   => $e->getMessage(),
+                );
+            }
+            catch (Exception $e) {
+                $response = array(
+                    'error'     => true,
+                    'message'   => $this->__('Cannot delete parcel from shipment')
+                );
+            }
+            if (is_array($response)) {
+                $response = Mage::helper('core')->jsonEncode($response);
+                $this->getResponse()->setBody($response);
+            }
+        }
+    }
+    
 }

@@ -1,1 +1,61 @@
-<p>BLOUP?</p>
+<?php $_shipment = $this->getShipment() ?>
+<div>
+    <div class="box-left">
+        <!-- Shipper -->
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-shipper"><?php echo Mage::helper('mfb_myflyingbox')->__('Shipper information') ?></h4>
+            </div>
+            <fieldset>
+                <?php if (strlen($_shipment->getShipperCompany()) > 0 ): ?>
+                  <strong><?php echo $this->escapeHtml($_shipment->getShipperCompany()) ?></strong>
+                <?php endif; ?>
+                <strong><?php echo $this->escapeHtml($_shipment->getShipperName()) ?></strong>
+                <br/><?php echo $this->escapeHtml($_shipment->getShipperStreet()) ?>
+                <br/><?php echo $this->escapeHtml($_shipment->getShipperPostalCode()) ?> <?php echo $this->escapeHtml($_shipment->getShipperCity()) ?>
+                <?php if (strlen($_shipment->getShipperState()) > 0 ):
+                        echo $this->escapeHtml($_shipment->getShipperState());
+                      endif;?>
+                <br/><?php echo $this->escapeHtml($_shipment->getShipperCountry()) ?>
+                <br/>
+                <br/><?php echo $this->escapeHtml($_shipment->getShipperPhone()) ?>
+                <br/><?php echo $this->escapeHtml($_shipment->getShipperEmail()) ?>
+            </fieldset>
+        </div>
+    </div>
+    <div class="box-right">
+        <!-- Receiver -->
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4 class="icon-head head-receiver"><?php echo Mage::helper('mfb_myflyingbox')->__('Receiver information') ?></h4>
+            </div>
+            <fieldset>
+                <?php if (strlen($_shipment->getRecipientCompany()) > 0 ): ?>
+                  <strong><?php echo $this->escapeHtml($_shipment->getRecipientCompany()) ?></strong>
+                <?php endif; ?>
+                <strong><?php echo $this->escapeHtml($_shipment->getRecipientName()) ?></strong>
+                <br/><?php echo $this->escapeHtml($_shipment->getRecipientStreet()) ?>
+                <br/><?php echo $this->escapeHtml($_shipment->getRecipientPostalCode()) ?> <?php echo $this->escapeHtml($_shipment->getRecipientCity()) ?>
+                <?php if (strlen($_shipment->getRecipientState()) > 0 ):
+                        echo $this->escapeHtml($_shipment->getRecipientState());
+                      endif;?>
+                <br/><?php echo $this->escapeHtml($_shipment->getRecipientCountry()) ?>
+                <br/>
+                <br/><?php echo $this->escapeHtml($_shipment->getRecipientPhone()) ?>
+                <br/><?php echo $this->escapeHtml($_shipment->getRecipientEmail()) ?>
+            </fieldset>
+        </div>
+    </div>
+    
+    <div class="clear"></div>
+
+    <div class="box-left">
+        <div class="entry-edit">
+            <div class="entry-edit-head">
+                <h4><?php echo Mage::helper('mfb_myflyingbox')->__('Parcels list') ?></h4>
+            </div>
+            <fieldset><?php echo $this->getChildHtml('shipment_parcels') ?></fieldset>
+        </div>
+    </div>
+    
+</div>

@@ -129,6 +129,11 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         return $this->getData('_parcel_collection');
     }
 
+
+    public function getParcels() {
+      return $this->getSelectedParcelsCollection();
+    }
+
     /**
      * get default values
      *
@@ -161,5 +166,9 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         return $this->getData('_parent_order');
     }
     
+    // TODO: Customize when proper status support
+    public function canEdit() {
+      return true;
+    }
     
 }

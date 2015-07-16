@@ -144,27 +144,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Parcel_Grid extends Mage_Adminhtml_Block_W
 
             )
         );
-        $this->addColumn(
-            'value',
-            array(
-                'header' => Mage::helper('mfb_myflyingbox')->__('Declared value (in cents)'),
-                'index'  => 'value',
-                'type'=> 'number',
 
-            )
-        );
-        $this->addColumn(
-            'currency',
-            array(
-                'header' => Mage::helper('mfb_myflyingbox')->__('Value currency'),
-                'index'  => 'currency',
-                'type'  => 'options',
-                'options' => Mage::helper('mfb_myflyingbox')->convertOptions(
-                    Mage::getModel('mfb_myflyingbox/parcel_attribute_source_currency')->getAllOptions(false)
-                )
-
-            )
-        );
         $this->addColumn(
             'country_of_origin',
             array(
@@ -255,24 +235,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Parcel_Grid extends Mage_Adminhtml_Block_W
                 )
             )
         );
-        $this->getMassactionBlock()->addItem(
-            'currency',
-            array(
-                'label'      => Mage::helper('mfb_myflyingbox')->__('Change Value currency'),
-                'url'        => $this->getUrl('*/*/massCurrency', array('_current'=>true)),
-                'additional' => array(
-                    'flag_currency' => array(
-                        'name'   => 'flag_currency',
-                        'type'   => 'select',
-                        'class'  => 'required-entry',
-                        'label'  => Mage::helper('mfb_myflyingbox')->__('Value currency'),
-                        'values' => Mage::getModel('mfb_myflyingbox/parcel_attribute_source_currency')
-                            ->getAllOptions(true),
 
-                    )
-                )
-            )
-        );
         $this->getMassactionBlock()->addItem(
             'country_of_origin',
             array(

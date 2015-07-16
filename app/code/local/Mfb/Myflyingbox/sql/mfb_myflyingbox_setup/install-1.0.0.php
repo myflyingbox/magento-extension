@@ -202,7 +202,7 @@ $table = $this->getConnection()
         'Shipper postal code'
     )
     ->addColumn(
-        'sihpper_country',
+        'shipper_country',
         Varien_Db_Ddl_Table::TYPE_TEXT, 2,
         array(
             'nullable'  => false,

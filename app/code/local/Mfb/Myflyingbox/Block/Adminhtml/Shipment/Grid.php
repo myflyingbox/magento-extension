@@ -238,13 +238,13 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_Grid extends Mage_Adminhtml_Block
             )
         );
         $this->getMassactionBlock()->addItem(
-            'sihpper_country',
+            'shipper_country',
             array(
                 'label'      => Mage::helper('mfb_myflyingbox')->__('Change Shipper country'),
                 'url'        => $this->getUrl('*/*/massSihpperCountry', array('_current'=>true)),
                 'additional' => array(
-                    'flag_sihpper_country' => array(
-                        'name'   => 'flag_sihpper_country',
+                    'flag_shipper_country' => array(
+                        'name'   => 'flag_shipper_country',
                         'type'   => 'select',
                         'class'  => 'required-entry',
                         'label'  => Mage::helper('mfb_myflyingbox')->__('Shipper country'),

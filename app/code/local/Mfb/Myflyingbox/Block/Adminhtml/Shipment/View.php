@@ -15,11 +15,26 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_View extends Mage_Adminhtml_Block
         $this->_removeButton('delete');
         $this->_removeButton('reset');
         $this->_removeButton('save');
-        $this->setId('mfb_shipment_view');
+        $this->_updateButton(
+            'back',
+            'label',
+            Mage::helper('mfb_myflyingbox')->__('Back to order')
+        );
         
+        $this->setId('mfb_shipment_view');
         
         $shipment = $this->getShipment();
         $order = $this->getOrder();
+        
+        if ($shipment->canEdit()) {
+        
+            $onclickJs = 'setLocation(\''.$this->getUrl('*/*/edit').'\');';
+            $this->_addButton('shipment_edit', array(
+                'label'    => Mage::helper('mfb_myflyingbox')->__('Edit shipment'),
+                'onclick'  => $onclickJs,
+            ));
+        }
+        
         $coreHelper = Mage::helper('core');
     }
 
@@ -53,6 +68,11 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_View extends Mage_Adminhtml_Block
     {
         $params2['id'] = $this->getShipmentId();
         return parent::getUrl($params, $params2);
+    }
+
+    public function getBackUrl()
+    {
+        return $this->getUrl('*/sales_order/view', array('order_id'=>$this->getOrder()->getId()));
     }
 
     public function getEditUrl()
