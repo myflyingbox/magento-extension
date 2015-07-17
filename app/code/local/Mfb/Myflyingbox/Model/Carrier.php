@@ -50,7 +50,6 @@ class Mfb_Myflyingbox_Model_Carrier
         } else {
           $recipient_country = false;
         }
-        Mage::log($recipient_country);
         
         // Getting destination city
         if ($request->getDestCity()) {
@@ -59,15 +58,12 @@ class Mfb_Myflyingbox_Model_Carrier
           $recipient_city = false;
         }
         
-        Mage::log($recipient_city);
-        
         // Getting destination postcode
         if ($request->getDestPostcode()) {
           $recipient_postcode = $request->getDestPostcode();
         } else {
           $recipient_postcode = false;
         }
-        Mage::log($recipient_postcode);
         
         // Calculating total weight
         $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
@@ -75,10 +71,6 @@ class Mfb_Myflyingbox_Model_Carrier
         foreach($items as $item) {
             $weight += ($item->getWeight() * $item->getQty()) ;
         }
-        
-        Mage::log('MFB: Total weight:');
-        Mage::log($weight);
-        
         
         // We do not proceed further if there is not enough data
         if (!$recipient_city || !$recipient_country || !$recipient_postcode || $weight == 0)

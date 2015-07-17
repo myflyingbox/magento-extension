@@ -16,5 +16,10 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_View_Service extends Mage_Adminht
     {
         return $this->getUrl('*/*/bookOrder', array('id'=>$this->getShipment()->getId()));
     }
-    
+
+    public function getLabelUrl()
+    {
+        return $this->getUrl('*/*/downloadLabels', array('id'=>$this->getShipment()->getId()));
+    }
+
 }

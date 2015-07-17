@@ -13,7 +13,7 @@
     
         <span class="field-row">
           <label for="offer_id"><?php echo Mage::helper('mfb_myflyingbox')->__('Select a service:');?></label>
-            <select name="offer_id">
+            <select id="service-selector" name="offer_id">
             <?php
               foreach($shipment->getLatestQuote()->getOffers() as $offer) {
                 echo '<option value="'.$offer->getId().'"';
@@ -27,6 +27,55 @@
         <?php
           foreach($shipment->getLatestQuote()->getOffers() as $offer) {
             echo '<input type="hidden" name="offer_'.$offer->getId().'[offer_id]" value="'.$offer->getId().'"/>';
+            
+            // If pickup, display collection date selector
+            if ($offer->pickup) {
+            ?>
+              <div class="offer_<?php echo $offer->getId(); ?> collection_dates" style="display: none;">
+                <span class="field-row">
+              <?php
+                // A pickup is required, we must select the date
+                echo "<label for='offer_".$offer->getId()."[collection_date]'>";
+                echo Mage::helper('mfb_myflyingbox')->__('Select pickup date:');
+                echo "</label>";
+              ?>
+                <select name="offer_<?php echo $offer->getId();?>[collection_date]" class="pickup-date-selector">
+                <?php
+                foreach ( $offer->getCollectionDates() as $date ) {
+                  echo "<option value='".$date->date."'>".$date->date."</option>";
+                }
+                ?>
+              </select>
+              </span>
+            </div>
+          <?php
+            }
+            
+            // if relay delivery, display relay selector
+            
+            if ($offer->relay) {
+            ?>
+              <div class="offer_<?php echo $offer->getId(); ?> delivery_locations" style="display: none;">
+                <span class="field-row">
+              <?php
+                // A pickup is required, we must select the date
+                echo "<label for='offer_".$offer->getId()."[delivery_location_code]'>";
+                echo Mage::helper('mfb_myflyingbox')->__('Select delivery relay:');
+                echo "</label>";
+              ?>
+                <select name="offer_<?php echo $offer->getId();?>[delivery_location_code]" class="delivery-location-selector">
+                <?php
+                foreach ( $offer->getDeliveryLocations() as $location ) {
+                  echo "<option value='".$location->code."'>";
+                  echo $location->code . ' ' . $location->company . ' / ' . $location->street . ' / ' . $location->postal_code.' '.$location->city;
+                  echo "</option>";
+                }
+                ?>
+              </select>
+              </span>
+            </div>
+          <?php
+            }
           }
         ?>
           <div class="f-left">
@@ -36,5 +85,54 @@
           </div>
     </form>
     
-    <?php } ?>
+    <?php } else {
+      // Shipments booked
+      $offer = $shipment->getSelectedOffer();
+      echo '<p>';
+      echo Mage::helper('mfb_myflyingbox')->__('Shipment booked with:');
+      echo ' ';
+      echo '<strong>';
+      echo $offer->getMfbProductName();
+      echo '</strong>';
+      echo '</p>';
+      ?>
+      <button id="download_labels" type="button" class="scalable download" onclick="window.open('<?php echo $this->getLabelUrl();?>')">
+        <?php echo Mage::helper('mfb_myflyingbox')->__('Download labels');?>
+      </button>
+      <br/>
+      <br/>
+      
+      <?php
+      if ($offer->getPickup()) {
+        echo '<p>';
+        echo Mage::helper('mfb_myflyingbox')->__('Selected pickup date:');
+        echo ' ';
+        echo '<strong>';
+        echo $shipment->getCollectionDate();
+        echo '</strong>';
+        echo '</p>';
+      }
+      
+      if ($offer->getRelay()) {
+        echo '<p>';
+        echo Mage::helper('mfb_myflyingbox')->__('Delivery at the following relay address:');
+        echo '<br/>';
+        echo nl2br($shipment->getRelayDeliveryAddress());
+        echo '</p>';
+      }
+      
+    } ?>
 </div>
+<script type="text/javascript">
+  var offer_id = $F('service-selector');
+  $$('div#shipment_service_block div.collection_dates.offer_'+offer_id).invoke('show');
+  $$('div#shipment_service_block div.delivery_locations.offer_'+offer_id).invoke('show');
+
+  Event.observe($('service-selector'), 'change', function(){
+    $$('div#shipment_service_block div.collection_dates').invoke('hide');
+    $$('div#shipment_service_block div.delivery_locations').invoke('hide');
+    var offer_id = $F('service-selector');
+    $$('div#shipment_service_block div.collection_dates.offer_'+offer_id).invoke('show');
+    $$('div#shipment_service_block div.delivery_locations.offer_'+offer_id).invoke('show');
+  });
+</script>

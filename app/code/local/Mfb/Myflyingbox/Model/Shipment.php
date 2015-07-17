@@ -134,9 +134,11 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         return false;
       }
       
+      $quote = $this->getLatestQuote();
+      
       $res = Mage::getModel('mfb_myflyingbox/offer')->getCollection()
-                  ->addFieldToFilter("shipment_id", $this->getId())
-                  ->addFieldToFilter("api_quote_uuid", $this->getApiQuoteUuid())
+                  ->addFieldToFilter("api_offer_uuid", $this->getApiOfferUuid())
+                  ->addFieldToFilter("quote_id", $quote->getId())
                   ->setOrder("created_at", "DESC")
                   ->setPageSize(1)
                   ->loadData()
@@ -382,12 +384,17 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       'parcels' => array()
     );
     
+    Mage::log($booking_data);
+    
     if( $offer->getPickup() == true ) {
       $params['shipper']['collection_date'] = $booking_data['collection_date'];
+      $this->setCollectionDate($booking_data['collection_date']);
     }
 
-    if( $this->getRelay() == true ) {
+    if( $offer->getRelay() == true ) {
       $params['recipient']['location_code'] = $booking_data['delivery_location_code'];
+      $this->setRelayDeliveryCode($booking_data['delivery_location_code']);
+      $this->setRelayDeliveryAddress($offer->getFormattedRelayAddress($booking_data['delivery_location_code']));
     }
     
     foreach( $this->getParcels() as $parcel ) {

@@ -530,10 +530,26 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
             catch (Exception $e) {
-                Mage::getSingleton('adminhtml/session')->addError($this->__('Cannot delete parcel from shipment'));
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
             $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
         }
     }
+    
+    public function downloadLabelsAction () {
+      if ($shipment = $this->_initShipment()) {
+      
+        $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+        $booking = Lce\Resource\Order::find($shipment->getApiOrderUuid());
+        $labels_content = $booking->labels();
+        $filename = 'labels_'.$booking->id.'.pdf';
+        
+        header('Content-type: application/pdf');
+        header("Content-Transfer-Encoding: binary");
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        print($labels_content);
+        die();
+    }
+  }
 
 }

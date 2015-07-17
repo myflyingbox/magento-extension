@@ -1,11 +1,11 @@
 <div id="shipment_parcels_block">
-
+<?php $shipment = $this->getShipment(); ?>
   <div id="parcels-list">
-    <?php foreach($this->getShipment()->getParcels() as $parcel) {
+    <?php foreach($shipment->getParcels() as $parcel) {
     
       echo "<p>";
       
-      if ($this->getShipment()->canEdit()) {
+      if ($shipment->canEdit()) {
       ?>
       <form action="<?php echo $this->getDeleteUrl($parcel->getId()); ?>" method="POST">
       <input type="hidden" name="form_key" value="<?php echo Mage::getSingleton('core/session')->getFormKey(); ?>" />
@@ -15,6 +15,13 @@
       </form>
       <?php
       }
+      
+      if ($shipment->isBooked() && !empty($parcel->getTrackingNumber())) {
+        echo '<strong>';
+        echo $parcel->getTrackingNumber();
+        echo '</strong> - ';
+      }
+      
       echo $parcel->getLength()."x".$parcel->getWidth()."x".$parcel->getHeight()."cm, ".$parcel->getWeight()."kg";
       echo " | ";
       echo $parcel->getFormattedValue();
