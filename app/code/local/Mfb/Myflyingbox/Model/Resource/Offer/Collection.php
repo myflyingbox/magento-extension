@@ -37,6 +37,22 @@ class Mfb_Myflyingbox_Model_Resource_Offer_Collection extends Mage_Core_Model_Re
         parent::_construct();
         $this->_init('mfb_myflyingbox/offer');
     }
+    
+    
+    // Collections do not natively support unserialization...
+    protected function _afterLoad()
+    {
+        parent::_afterLoad();
+        foreach ($this->getItems() as $item) {
+            $item->setData('collection_dates',unserialize($item->getData('collection_dates')));
+            $item->setData('delivery_locations',unserialize($item->getData('delivery_locations')));
+            $item->setDataChanges(false);
+        }
+        return $this;
+    }
+
+
+
 
     /**
      * get offers as array
