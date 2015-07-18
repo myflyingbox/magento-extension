@@ -72,6 +72,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Pickup'),
                 'name'  => 'pickup',
+                'note'  => $this->__('Does this service support pickup?'),
             'required'  => true,
             'disabled' => true,
             'class' => 'required-entry',
@@ -95,6 +96,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Relay'),
                 'name'  => 'relay',
+                'note'  => $this->__('Does this service support relay delivery?'),
             'required'  => true,
             'disabled' => true,
             'class' => 'required-entry',
@@ -111,14 +113,27 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             ),
            )
         );
+        
+        $fieldset->addField(
+            'carrier_display_name',
+            'text',
+            array(
+                'label' => Mage::helper('mfb_myflyingbox')->__('Carrier display name'),
+                'name'  => 'carrier_display_name',
+                'note'  => $this->__('This controls the carrier name which the user sees during checkout'),
+            'required'  => true,
+            'class' => 'required-entry',
 
+           )
+        );
 
         $fieldset->addField(
             'display_name',
             'text',
             array(
-                'label' => Mage::helper('mfb_myflyingbox')->__('Display name'),
+                'label' => Mage::helper('mfb_myflyingbox')->__('Service display name'),
                 'name'  => 'display_name',
+                'note'  => $this->__('This controls the shipping service name which the user sees during checkout'),
             'required'  => true,
             'class' => 'required-entry',
 
@@ -141,6 +156,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Tracking URL'),
                 'name'  => 'tracking_url',
+                'note'  => $this->__('Put the variable TRACKING_NUMBER in the URL, it will be automatically replaced with the real tracking number when generating the link')
 
            )
         );
@@ -152,6 +168,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Flatrate pricing'),
                 'name'  => 'flatrate_pricing',
+                'note'  => $this->__('Activate to enable pricing based on flat-rate pricing table, as defined below. When enabled, the prices returned by the API will not be used.'),
             'required'  => true,
             'class' => 'required-entry',
 
@@ -175,7 +192,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('flatrate_pricelist'),
                 'name'  => 'flatrate_pricelist',
-
+                'note'  => $this->__('Prices are based on weight, so you can define as many rules as you want in the following format: Weight (up to, in kg, e.g. 6 or 7.5) | Price (float with dot as separator, e.g. 3.54). One rule per line.')
            )
         );
 
@@ -185,7 +202,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Limit by country/postcode'),
                 'name'  => 'included_postcodes',
-            'note'	=> $this->__('Will limit this service only to specified postcodes (in the form: FR-86 | FR-75010, one rule per line)'),
+                'note'  => $this->__('Limits the service only to these postcodes. One rule per line (or same line and separated by a comma), using the following format: XX-YYYYY (XX = alpha2 country code, YYYYY = full postcode or prefix). Whitespaces will be ignored. You can also specify country codes without postcodes (just "XX"). Leave blank to apply no limitation.'),
 
            )
         );
@@ -196,7 +213,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             array(
                 'label' => Mage::helper('mfb_myflyingbox')->__('Excluded countries/postcodes'),
                 'name'  => 'excluded_postcodes',
-            'note'	=> $this->__('Exclude the specified countries/postcodes, in the form FR-94 | FR-75020, one rule per line.'),
+                'note'	=> $this->__('Excludes postcodes matching this list. One rule per line, using the following format: XX-YYYYY (XX = alpha2 country code, YYYYY = full postcode or just beginning). Whitespaces will be ignored. You can also specify country codes without postcodes (just "XX").'),
 
            )
         );

@@ -11,13 +11,10 @@ class Mfb_Myflyingbox_Model_Carrier
     
     public function __construct()
     {
-      Mage::log('MFB: Initializing MFB Carrier');
       parent::__construct();
 
-      Mage::log('MFB: Including MFB API lib');
       require_once(Mage::getBaseDir('lib') . '/Lce/bootstrap.php');
       
-      Mage::log('MFB: Testing presence of php-curl');
       // Check is php-curl is available
       if(!extension_loaded('curl')) print_r("php-curl does not seem te be installed on your system. Please contact your hosting provider. This extension is required for the module to work properly.");
       
@@ -25,7 +22,6 @@ class Mfb_Myflyingbox_Model_Carrier
       $env = $this->getConfigData('api_env');
       if ($env != 'staging' && $env != 'production') $env = 'staging';
       
-      Mage::log('MFB: Instanciating the MFB API');
       // Initializing API lib
       $api = Lce\Lce::configure($this->getConfigData('api_login'), $this->getConfigData('api_password'), $env);
       $api->application = "magento-mfb";
@@ -38,9 +34,6 @@ class Mfb_Myflyingbox_Model_Carrier
         Mage_Shipping_Model_Rate_Request $request
     )
     {
-        Mage::log('MFB: #collectRates has been called');
-
-        Mage::log('MFB: initializing result variable');
         $this->_result = Mage::getModel('shipping/rate_result');
 
         // Getting destination country
@@ -76,6 +69,11 @@ class Mfb_Myflyingbox_Model_Carrier
         if (!$recipient_city || !$recipient_country || !$recipient_postcode || $weight == 0)
           return $this->_result;
 
+        // Now extracting the default parcel size to use
+        $dimension = Mage::getModel('mfb_myflyingbox/dimension')->getForWeight($weight);
+        
+        if (!$dimension) return $this->_result; // If no fitting dimension, we just leave.
+        
         $params = array(
           'shipper' => array(
             'city' => $this->getConfigData('shipper_city'),
@@ -87,35 +85,44 @@ class Mfb_Myflyingbox_Model_Carrier
             'country' => $recipient_country,
             'is_a_company' => false),
           'parcels' => array(
-            array('length' => 10, 'height' => 10, 'width' => 10, 'weight' => 1.2)
+            array('length' => $dimension->getLength(), 'height' => $dimension->getHeight(), 'width' => $dimension->getWidth(), 'weight' => $weight)
           )
         );
         
         Mage::log('MFB: sending quote request to API');
         $api_quote = Lce\Resource\Quote::request($params);
         
-        Mage::log('MFB: looping through API offers');
         Mage::log('Number of offers:'.count($api_quote->offers));
         foreach($api_quote->offers as $k => $api_offer) {
-
+          // Getting the corresponding service
+          
           $offer_uuid = $api_offer->id;
           $offer_product_code = $api_offer->product->code;
           $offer_product_name = $api_offer->product->name;
           $offer_base_price_in_cents = $api_offer->price->amount_in_cents;
           $offer_currency = $api_offer->total_price->currency;
           
+          $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer_product_code);
+          
+          // Skipping if this service is not enabled
+          if (!$service || !$service->isEnabled())
+            continue;
+          
+          // Checking any restriction the service
+          if (!$service->destinationSupported($params['recipient']['postal_code'], $params['recipient']['country']))
+            continue;
+          
           $rate = Mage::getModel('shipping/rate_result_method');
           $rate->setCarrier($this->_code);
-          $rate->setCarrierTitle("MYFLYINGBOX");
+          $rate->setCarrierTitle($service->getCarrierDisplayName());
           $rate->setMethod($offer_product_code);
-          $rate->setMethodTitle($offer_product_name);
+          $rate->setMethodTitle($service->getDisplayName());
           $rate->setCost(0);
-          $rate->setPrice($offer_base_price_in_cents/100);
-          
-          Mage::log($rate);
+          $rate->setPrice($this->_getAdjustedPrice($offer_base_price_in_cents));
           
           $this->_result->append($rate);
           
+          Mage::log($rate);
         }
 
         return $this->_result;
@@ -129,25 +136,46 @@ class Mfb_Myflyingbox_Model_Carrier
         );
     }
     
-    protected function _getDefaultShippingRate(){
-        $rate = Mage::getModel('shipping/rate_result_method');
-        /* @var $rate Mage_Shipping_Model_Rate_Result_Method */
-
-        $rate->setCarrier($this->_code);
-        /**
-         * getConfigData(config_key) returns the configuration value for the
-         * carriers/[carrier_code]/[config_key]
-         */
-        $rate->setCarrierTitle($this->getConfigData('title'));
-
-        $rate->setMethod('standard');
-        $rate->setMethodTitle('Standard');
-
-        $rate->setPrice(4.99);
-        $rate->setCost(0);
-
-        return $rate;
-    }
+    //~ protected function _getDefaultShippingRate(){
+        //~ $rate = Mage::getModel('shipping/rate_result_method');
+        //~ /* @var $rate Mage_Shipping_Model_Rate_Result_Method */
+//~ 
+        //~ $rate->setCarrier($this->_code);
+        //~ /**
+         //~ * getConfigData(config_key) returns the configuration value for the
+         //~ * carriers/[carrier_code]/[config_key]
+         //~ */
+        //~ $rate->setCarrierTitle($this->getConfigData('title'));
+//~ 
+        //~ $rate->setMethod('standard');
+        //~ $rate->setMethodTitle('Standard');
+//~ 
+        //~ $rate->setPrice(4.99);
+        //~ $rate->setCost(0);
+//~ 
+        //~ return $rate;
+    //~ }
     
+    protected function _getAdjustedPrice($price) {
+    
+        $increment = (int)$this->getConfigData('price_rounding_increment');
+        $surcharge_amount = (int)$this->getConfigData('price_surcharge_static');
+        $surcharge_percent = (int)$this->getConfigData('price_surcharge_percent');
+        
+        if (is_int($surcharge_percent) && $surcharge_percent > 0) {
+          $price = $price + ($price * $surcharge_percent / 100);
+        }
+
+        if (is_int($surcharge_amount) && $surcharge_amount > 0) {
+          $price = $price+$surcharge_amount;
+        }
+
+        if (is_int($increment) && $increment > 0) {
+          $increment = 1 / $increment;
+          $price = (ceil($price * $increment) / $increment);
+        }
+
+        return  $price / 100;
+    }
 }
 ?>

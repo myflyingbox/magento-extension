@@ -23,6 +23,17 @@
         </Mfb_Myflyingbox>
     </modules>
     <global>
+        <events>
+            <sales_quote_collect_totals_before>
+                <observers>
+                    <mfb_myflyingbox>
+                        <type>singleton</type>
+                        <class>mfb_myflyingbox/observer</class>
+                        <method>salesQuoteCollectTotalsBefore</method>
+                    </mfb_myflyingbox>
+                </observers>
+            </sales_quote_collect_totals_before>
+        </events>
         <resources>
             <mfb_myflyingbox_setup>
                 <setup>
@@ -131,7 +142,7 @@
               <!--
                   The title as referenced in the carrier class
               -->
-              <title>MFB Myflyingbox</title>
+              <title>Available shipping methods</title>
               <!--
                   The sort order specifies the position that
                   this carrier appears relative to the other

@@ -14,6 +14,16 @@ class Mfb_Myflyingbox_Model_Observer
         ));
     }
   }
+  
+  // Maybe could be used to get a better carrier name display?
+  public function salesQuoteCollectTotalsBefore(Varien_Event_Observer $observer)
+  {
+      /** @var Mage_Sales_Model_Quote $quote */
+      $quote = $observer->getQuote();
+
+      $store = Mage::app()->getStore($quote->getStoreId());
+      $store->setConfig('carriers/mfb_myflyingbox/title', 'Available shipping methods:');
+  }
 }
 
 ?>

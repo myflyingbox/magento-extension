@@ -19,7 +19,6 @@ class Mfb_Myflyingbox_Block_Adminhtml_Order_Edit_Tab_Shipments_Grid
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
         
-        Mage::log("block tab shipments grid initialized");
     }
 
   public function getOrderId()
@@ -81,27 +80,8 @@ class Mfb_Myflyingbox_Block_Adminhtml_Order_Edit_Tab_Shipments_Grid
                 'type'   => 'number'
             )
         );
-        $this->addColumn(
-            'shipper_name',
-            array(
-                'header'    => Mage::helper('mfb_myflyingbox')->__('Shipper name'),
-                'align'     => 'left',
-                'index'     => 'shipper_name',
-            )
-        );
-        
-        $this->addColumn(
-            'status',
-            array(
-                'header'  => Mage::helper('mfb_myflyingbox')->__('Status'),
-                'index'   => 'status',
-                'type'    => 'options',
-                'options' => array(
-                    '1' => Mage::helper('mfb_myflyingbox')->__('Enabled'),
-                    '0' => Mage::helper('mfb_myflyingbox')->__('Disabled'),
-                )
-            )
-        );
+
+
         $this->addColumn(
             'collection_date',
             array(
@@ -138,15 +118,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Order_Edit_Tab_Shipments_Grid
 
             )
         );
-        $this->addColumn(
-            'recipient_city',
-            array(
-                'header' => Mage::helper('mfb_myflyingbox')->__('Receiver city'),
-                'index'  => 'recipient_city',
-                'type'=> 'text',
-
-            )
-        );
+        
         $this->addColumn(
             'recipient_postal_code',
             array(
@@ -156,6 +128,17 @@ class Mfb_Myflyingbox_Block_Adminhtml_Order_Edit_Tab_Shipments_Grid
 
             )
         );
+        
+        $this->addColumn(
+            'recipient_city',
+            array(
+                'header' => Mage::helper('mfb_myflyingbox')->__('Receiver city'),
+                'index'  => 'recipient_city',
+                'type'=> 'text',
+
+            )
+        );
+
         $this->addColumn(
             'recipient_country',
             array(
@@ -183,25 +166,25 @@ class Mfb_Myflyingbox_Block_Adminhtml_Order_Edit_Tab_Shipments_Grid
                 'type'      => 'datetime',
             )
         );
-        $this->addColumn(
-            'action',
-            array(
-                'header'  =>  Mage::helper('mfb_myflyingbox')->__('Action'),
-                'width'   => '100',
-                'type'    => 'action',
-                'getter'  => 'getId',
-                'actions' => array(
-                    array(
-                        'caption' => Mage::helper('mfb_myflyingbox')->__('Edit'),
-                        'url'     => array('base'=> '*/*/edit'),
-                        'field'   => 'id'
-                    )
-                ),
-                'filter'    => false,
-                'is_system' => true,
-                'sortable'  => false,
-            )
-        );
+        //~ $this->addColumn(
+            //~ 'action',
+            //~ array(
+                //~ 'header'  =>  Mage::helper('mfb_myflyingbox')->__('Action'),
+                //~ 'width'   => '100',
+                //~ 'type'    => 'action',
+                //~ 'getter'  => 'getId',
+                //~ 'actions' => array(
+                    //~ array(
+                        //~ 'caption' => Mage::helper('mfb_myflyingbox')->__('Edit'),
+                        //~ 'url'     => array('base'=> '*/*/edit'),
+                        //~ 'field'   => 'id'
+                    //~ )
+                //~ ),
+                //~ 'filter'    => false,
+                //~ 'is_system' => true,
+                //~ 'sortable'  => false,
+            //~ )
+        //~ );
         return parent::_prepareColumns();
     }
 

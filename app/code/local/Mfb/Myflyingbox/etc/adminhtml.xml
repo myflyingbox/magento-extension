@@ -76,39 +76,26 @@
                     <title>MyFlyingBox</title>
                     <sort_order>25</sort_order>
                     <children>
-                        <dimension translate="title" module="mfb_myflyingbox">
-                            <title>Dimension</title>
-                            <action>adminhtml/myflyingbox_dimension/config</action>
-                            <sort_order>0</sort_order>
-                        </dimension>
+<!-- TO ACTIVATE WHEN THERE ARE BETTER FEATURES THERE
                         <shipment translate="title" module="mfb_myflyingbox">
-                            <title>Shipment</title>
+                            <title>Shipments</title>
                             <action>adminhtml/myflyingbox_shipment</action>
-                            <sort_order>10</sort_order>
+                            <sort_order>0</sort_order>
                         </shipment>
-                        <quote translate="title" module="mfb_myflyingbox">
-                            <title>Quote</title>
-                            <action>adminhtml/myflyingbox_quote</action>
-                            <sort_order>20</sort_order>
-                        </quote>
-                        <offer translate="title" module="mfb_myflyingbox">
-                            <title>Offer</title>
-                            <action>adminhtml/myflyingbox_offer</action>
-                            <sort_order>30</sort_order>
-                        </offer>
-                        <parcel translate="title" module="mfb_myflyingbox">
-                            <title>Parcel</title>
-                            <action>adminhtml/myflyingbox_parcel</action>
-                            <sort_order>40</sort_order>
-                        </parcel>
+-->
                         <service translate="title" module="mfb_myflyingbox">
-                            <title>Service</title>
+                            <title>Services setup</title>
                             <action>adminhtml/myflyingbox_service</action>
-                            <sort_order>50</sort_order>
+                            <sort_order>10</sort_order>
                         </service>
+                        <dimension translate="title" module="mfb_myflyingbox">
+                            <title>Dimensions setup</title>
+                            <action>adminhtml/myflyingbox_dimension/config</action>
+                            <sort_order>20</sort_order>
+                        </dimension>
                     </children>
-                </mfb_myflyingbox>            </children>
+                </mfb_myflyingbox>
+            </children>
         </sales>
-
     </menu>
 </config>

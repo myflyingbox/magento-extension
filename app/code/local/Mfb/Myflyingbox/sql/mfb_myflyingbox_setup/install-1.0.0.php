@@ -668,12 +668,20 @@ $table = $this->getConnection()
         'Name'
     )
     ->addColumn(
+        'carrier_display_name',
+        Varien_Db_Ddl_Table::TYPE_TEXT, 255,
+        array(
+            'nullable'  => false,
+        ),
+        'Carrier display name (shown to customer)'
+    )
+    ->addColumn(
         'display_name',
         Varien_Db_Ddl_Table::TYPE_TEXT, 255,
         array(
             'nullable'  => false,
         ),
-        'Display name'
+        'Shipping method display name (shown to customer)'
     )
     ->addColumn(
         'pickup',

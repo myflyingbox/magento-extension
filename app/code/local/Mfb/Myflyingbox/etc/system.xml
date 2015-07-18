@@ -153,7 +153,7 @@
 
                         <default_parcel_description translate="label">
                           <label>Default parcel content</label>
-                          <comment></comment>
+                          <comment>Used during automatic initialization of shipments in back-office.</comment>
                           <frontend_type>text</frontend_type>
                           <sort_order>14</sort_order>
                           <show_in_default>1</show_in_default>
@@ -164,6 +164,7 @@
                         
                         <default_country_of_origin translate="label">
                           <label>Default country of origin</label>
+                          <comment>Used during automatic initialization of shipments in back-office.</comment>
                           <frontend_type>select</frontend_type>
                           <sort_order>15</sort_order>
                           <source_model>adminhtml/system_config_source_country</source_model>
@@ -171,6 +172,38 @@
                           <show_in_website>1</show_in_website>
                           <show_in_store>0</show_in_store>
                         </default_country_of_origin>
+
+                        <price_surcharge_percent translate="label">
+                          <label>Price surcharge (percentage of base price)</label>
+                          <comment>A value of 20 will inscrease the price by 20%, a value of 100 will double the price. Applied before static surcharge and rounding.</comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>16</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                        </price_surcharge_percent>
+
+                        <price_surcharge_static translate="label">
+                          <label>Price surcharge (in cents)</label>
+                          <comment>IN CENTS! If you want to add 5€ to all MFB service prices, then write 500. Applied before any rounding.</comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>17</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                        </price_surcharge_static>
+
+
+                        <price_rounding_increment translate="label">
+                          <label>Increment for price rounding</label>
+                          <comment>IN CENTS! e.g. 20 will round 13.33 to 13.40, 100 will round 15.13 to 16.00. Leave empty for no rounding.</comment>
+                          <frontend_type>text</frontend_type>
+                          <sort_order>18</sort_order>
+                          <show_in_default>1</show_in_default>
+                          <show_in_website>1</show_in_website>
+                          <show_in_store>1</show_in_store>
+                        </price_rounding_increment>
+                        
                     </fields>
                  </mfb_myflyingbox>
             </groups>
