@@ -384,7 +384,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       'parcels' => array()
     );
     
-    Mage::log($booking_data);
+    //Mage::log($booking_data);
     
     if( $offer->getPickup() == true ) {
       $params['shipper']['collection_date'] = $booking_data['collection_date'];

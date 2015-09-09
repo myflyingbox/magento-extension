@@ -49,6 +49,9 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
     public $included_destinations = array();
     public $excluded_destinations = array();
     
+    // Storing flat rate pricelist
+    public $flat_rates = array();
+    
     /**
      * constructor
      *
@@ -60,9 +63,9 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
     {
         parent::_construct();
         $this->_init('mfb_myflyingbox/service');
-        
-        if ($this->getId() > 0)
+        if ($this->getId() > 0) {
           $this->loadDestinationRestrictions();
+        }
     }
 
     /**
@@ -118,7 +121,6 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
                   ->getData();
                   
       if (empty($service)) {
-        Mage::log('Cound not find service with code '.$code);
         return false;
       }
       return $this->load($service[0]['entity_id']);
@@ -234,5 +236,42 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
           $this->excluded_destinations[$country][] = $postcode;
         }
       }
+    }
+    
+    public function flatratePriceForWeight( $weight ) {
+      $this->loadFlatrates();
+      foreach( $this->flat_rates as $rate ) {
+        if ( $weight > $rate[0] && $weight < $rate[1] ) return $rate[2];
+      }
+    }
+    
+    private function loadFlatrates() {
+      $this->flat_rates = array();
+      $rates = array();
+      $pricelist = $this->getFlatratePricelist();
+      if( !empty($pricelist) )
+      {
+        foreach( explode(',', $pricelist) as $part1) {
+          foreach( explode(PHP_EOL, $part1) as $part2 ) {
+            $rates[] = $part2;
+          }
+        }
+      }
+      $previous_weight = 0;
+      foreach( $rates as $rate ) {
+        $split = explode('|', $rate);
+        if ( count($split) == 2) {
+          $weight = trim($split[0]);
+          $price = trim($split[1]);
+          $this->flat_rates[] = array( $previous_weight, (float)$weight, (float)$price );
+          $previous_weight = $weight;
+        }
+      }
+      // Sorting by weight
+      $weights = array();
+      foreach($this->flat_rates as $key => $value){
+        $weights[$key] = $value[1];
+      }
+      array_multisort($weights, SORT_ASC, SORT_NUMERIC, $this->flat_rates);
     }
 }

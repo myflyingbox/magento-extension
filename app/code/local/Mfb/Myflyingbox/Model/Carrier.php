@@ -112,17 +112,25 @@ class Mfb_Myflyingbox_Model_Carrier
           if (!$service->destinationSupported($params['recipient']['postal_code'], $params['recipient']['country']))
             continue;
           
+          // Determining the price
+          if ( $service->getFlatratePricing() == true ) {
+            // If flatrate pricing enabled, we get the price from the static pricelist
+            $rate_price = $service->flatratePriceForWeight( $weight );
+          } else {
+            // Otherwise, we take the price from the API offer, and make relevant adjustments
+            $rate_price = $this->_getAdjustedPrice($offer_base_price_in_cents);
+          }
+          
           $rate = Mage::getModel('shipping/rate_result_method');
           $rate->setCarrier($this->_code);
           $rate->setCarrierTitle($service->getCarrierDisplayName());
           $rate->setMethod($offer_product_code);
           $rate->setMethodTitle($service->getDisplayName());
           $rate->setCost(0);
-          $rate->setPrice($this->_getAdjustedPrice($offer_base_price_in_cents));
+          $rate->setPrice($rate_price);
           
           $this->_result->append($rate);
           
-          Mage::log($rate);
         }
 
         return $this->_result;
