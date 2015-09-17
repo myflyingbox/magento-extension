@@ -183,10 +183,10 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
     private function loadDestinationRestrictions() {
       // Loading included destinations first
       $rules = array();
-      
-      if(!empty($this->getIncludedPostcodes()))
+      $included_postcodes = $this->getIncludedPostcodes();
+      if(!empty($included_postcodes))
       {
-        foreach( explode(',', $this->getIncludedPostcodes()) as $part1) {
+        foreach( explode(',', $included_postcodes) as $part1) {
           foreach( explode('\r\n', $part1) as $part2 ) {
             $rules[] = $part2;
           }
@@ -212,9 +212,10 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
       
       // Loading excluded destinations
       $rules = array();
-      if(!empty($this->getExcludedPostcodes()))
+      $excluded_postcodes = $this->getExcludedPostcodes();
+      if(!empty($excluded_postcodes))
       {
-        foreach( explode(',', $this->getExcludedPostcodes()) as $part1) {
+        foreach( explode(',', $excluded_postcodes) as $part1) {
           foreach( explode("\n", $part1) as $part2 ) {
             $rules[] = $part2;
           }

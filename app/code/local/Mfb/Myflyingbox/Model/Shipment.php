@@ -247,7 +247,8 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     
     // TODO: Customize when proper status support
     public function canEdit() {
-      if ( !empty($this->getApiOrderUuid()) ) {
+      $api_order_uuid = $this->getApiOrderUuid();
+      if ( !empty($api_order_uuid) ) {
         return false;
       } else {
         return true;
@@ -355,7 +356,8 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
   }
 
   public function isBooked() {
-    return !empty($this->getApiOrderUuid());
+    $api_order_uuid = $this->getApiOrderUuid();
+    return !empty($api_order_uuid);
   }
 
   public function bookOrder($booking_data) {

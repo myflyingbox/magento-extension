@@ -19,7 +19,7 @@
 <config>
     <modules>
         <Mfb_Myflyingbox>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </Mfb_Myflyingbox>
     </modules>
     <global>
