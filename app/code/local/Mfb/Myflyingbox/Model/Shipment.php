@@ -109,14 +109,14 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     }
     
     public function getLatestQuote() {
-    
-      if ( empty($this->getApiQuoteUuid()) ) {
+      $api_quote_uuid = $this->getApiQuoteUuid();
+      if ( empty($api_quote_uuid) ) {
         return false;
       }
       
       $res = Mage::getModel('mfb_myflyingbox/quote')->getCollection()
                   ->addFieldToFilter("shipment_id", $this->getId())
-                  ->addFieldToFilter("api_quote_uuid", $this->getApiQuoteUuid())
+                  ->addFieldToFilter("api_quote_uuid", $api_quote_uuid)
                   ->setOrder("created_at", "DESC")
                   ->setPageSize(1)
                   ->loadData()
@@ -129,15 +129,16 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     }
 
     public function getSelectedOffer() {
-    
-      if ( empty($this->getApiQuoteUuid()) || empty($this->getApiOfferUuid()) ) {
+      $api_quote_uuid = $this->getApiQuoteUuid();
+      $api_offer_uuid = $this->getApiOfferUuid();
+      if ( empty($api_quote_uuid) || empty($api_offer_uuid) ) {
         return false;
       }
       
       $quote = $this->getLatestQuote();
       
       $res = Mage::getModel('mfb_myflyingbox/offer')->getCollection()
-                  ->addFieldToFilter("api_offer_uuid", $this->getApiOfferUuid())
+                  ->addFieldToFilter("api_offer_uuid", $api_offer_uuid)
                   ->addFieldToFilter("quote_id", $quote->getId())
                   ->setOrder("created_at", "DESC")
                   ->setPageSize(1)
