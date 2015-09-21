@@ -115,7 +115,7 @@ class Mfb_Myflyingbox_Model_Carrier
           // Determining the price
           if ( $service->getFlatratePricing() == true ) {
             // If flatrate pricing enabled, we get the price from the static pricelist
-            $rate_price = $service->flatratePriceForWeight( $weight );
+            $rate_price = $service->flatratePriceForWeight( $weight, $params['recipient']['country'] );
           } else {
             // Otherwise, we take the price from the API offer, and make relevant adjustments
             $rate_price = $this->_getAdjustedPrice($offer_base_price_in_cents);

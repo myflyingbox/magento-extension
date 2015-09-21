@@ -239,14 +239,14 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
       }
     }
     
-    public function flatratePriceForWeight( $weight ) {
-      $this->loadFlatrates();
+    public function flatratePriceForWeight( $weight, $country = null ) {
+      $this->loadFlatrates( $country );
       foreach( $this->flat_rates as $rate ) {
         if ( $weight > $rate[0] && $weight < $rate[1] ) return $rate[2];
       }
     }
     
-    private function loadFlatrates() {
+    private function loadFlatrates( $country ) {
       $this->flat_rates = array();
       $rates = array();
       $pricelist = $this->getFlatratePricelist();
@@ -259,20 +259,47 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
         }
       }
       $previous_weight = 0;
+      
+      $valid_rates = array(); // Storing applicable rates (for current country)
       foreach( $rates as $rate ) {
         $split = explode('|', $rate);
+        
+        // No country specific rate
         if ( count($split) == 2) {
           $weight = trim($split[0]);
           $price = trim($split[1]);
-          $this->flat_rates[] = array( $previous_weight, (float)$weight, (float)$price );
-          $previous_weight = $weight;
+          $valid_rates[] = array( (float)$weight, (float)$price );
+        // Rate for specific country
+        } else if ( count($split) == 3 && $country != null ) {
+          $rate_country = trim($split[0]);
+          $weight = trim($split[1]);
+          $price = trim($split[2]);
+          if ( $rate_country == $country ) {
+            $valid_rates[] = array( (float)$weight, (float)$price );
+          }
         }
       }
+      // Removing duplicates, keeping only latest defined rate
+      $weights = array();
+      foreach ( array_reverse($valid_rates) as $rate ) {
+        if ( !in_array( $rate[0], $weights ) ) {
+          $this->flat_rates[] = $rate;
+        }
+        $weights[] = $rate[0];
+      }
+      
       // Sorting by weight
       $weights = array();
       foreach($this->flat_rates as $key => $value){
         $weights[$key] = $value[1];
       }
       array_multisort($weights, SORT_ASC, SORT_NUMERIC, $this->flat_rates);
+      
+      // And finally, setting 'previous_weight' values to ease extraction
+      $previous_weight = 0;
+      foreach($this->flat_rates as $key => $value) {
+        $this->flat_rates[$key] = array($previous_weight, $value[0], $value[1]);
+        $previous_weight = $value[0];
+      }
     }
 }
