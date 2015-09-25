@@ -133,7 +133,7 @@ class Mfb_Myflyingbox_Model_Offer extends Mage_Core_Model_Abstract
     public function getFormattedRelayAddress($code) {
       foreach ( $this->getDeliveryLocations() as $location ) {
         if ($location->code == $code) {
-          return implode("\n",[$location->company, $location->street, $location->postal_code.' '.$location->city]);
+          return implode("\n",array($location->company, $location->street, $location->postal_code.' '.$location->city));
         }
       }
     }

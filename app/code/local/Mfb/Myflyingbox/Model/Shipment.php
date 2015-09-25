@@ -232,7 +232,8 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       $data['recipient_company'] = $recipient->getCompany();
       $data['recipient_street'] = implode('\n', $recipient->getStreet());
       $data['recipient_city'] = $recipient->getCity();
-      if ( in_array( $recipient->getCompany(), ['US','CA']) ) {
+      $company = $recipient->getCompany();
+      if ( in_array( $company, array('US','CA') )) {
         $data['recipient_state'] = $recipient->getRegion();
       }
       $data['recipient_postal_code'] = $recipient->getPostcode();
