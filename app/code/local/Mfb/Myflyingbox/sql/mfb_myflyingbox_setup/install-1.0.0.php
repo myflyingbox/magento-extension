@@ -108,6 +108,8 @@ $table = $this->getConnection()
     ) 
     ->setComment('Dimension Table');
 $this->getConnection()->createTable($table);
+
+
 $table = $this->getConnection()
     ->newTable($this->getTable('mfb_myflyingbox/shipment'))
     ->addColumn(
@@ -120,6 +122,14 @@ $table = $this->getConnection()
             'primary'   => true,
         ),
         'Shipment ID'
+    )
+    ->addColumn(
+        'order_id',
+        Varien_Db_Ddl_Table::TYPE_INTEGER, null,
+        array(
+            'unsigned'  => true,
+        ),
+        'Order ID'
     )
     ->addColumn(
         'api_quote_uuid',
@@ -320,7 +330,9 @@ $table = $this->getConnection()
         'Shipment Creation Time'
     ) 
     ->setComment('Shipment Table');
+
 $this->getConnection()->createTable($table);
+
 $table = $this->getConnection()
     ->newTable($this->getTable('mfb_myflyingbox/quote'))
     ->addColumn(
@@ -373,6 +385,8 @@ $table = $this->getConnection()
     ->addIndex($this->getIdxName('mfb_myflyingbox/shipment', array('shipment_id')), array('shipment_id'))
     ->setComment('Quote Table');
 $this->getConnection()->createTable($table);
+
+
 $table = $this->getConnection()
     ->newTable($this->getTable('mfb_myflyingbox/offer'))
     ->addColumn(
@@ -498,6 +512,8 @@ $table = $this->getConnection()
     ->addIndex($this->getIdxName('mfb_myflyingbox/quote', array('quote_id')), array('quote_id'))
     ->setComment('Offer Table');
 $this->getConnection()->createTable($table);
+
+
 $table = $this->getConnection()
     ->newTable($this->getTable('mfb_myflyingbox/parcel'))
     ->addColumn(
@@ -638,6 +654,8 @@ $table = $this->getConnection()
     ->addIndex($this->getIdxName('mfb_myflyingbox/shipment', array('shipment_id')), array('shipment_id'))
     ->setComment('Parcel Table');
 $this->getConnection()->createTable($table);
+
+
 $table = $this->getConnection()
     ->newTable($this->getTable('mfb_myflyingbox/service'))
     ->addColumn(
