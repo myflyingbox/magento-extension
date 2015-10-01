@@ -15,8 +15,8 @@
       </form>
       <?php
       }
-      
-      if ($shipment->isBooked() && !empty($parcel->getTrackingNumber())) {
+      $tracking_number = $parcel->getTrackingNumber();
+      if ($shipment->isBooked() && !empty($tracking_number)) {
         echo '<strong>';
         echo $parcel->getTrackingNumber();
         echo '</strong> - ';
