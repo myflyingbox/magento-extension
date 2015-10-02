@@ -121,6 +121,11 @@ class Mfb_Myflyingbox_Model_Carrier
             $rate_price = $this->_getAdjustedPrice($offer_base_price_in_cents);
           }
           
+          // If we do not have any price, we do not propose this service.
+          if (!$rate_price) {
+            continue;
+          }
+          
           $rate = Mage::getModel('shipping/rate_result_method');
           $rate->setCarrier($this->_code);
           $rate->setCarrierTitle($service->getCarrierDisplayName());

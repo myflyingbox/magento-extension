@@ -244,6 +244,7 @@ class Mfb_Myflyingbox_Model_Service extends Mage_Core_Model_Abstract
       foreach( $this->flat_rates as $rate ) {
         if ( $weight > $rate[0] && $weight < $rate[1] ) return $rate[2];
       }
+      return false;
     }
     
     private function loadFlatrates( $country ) {
