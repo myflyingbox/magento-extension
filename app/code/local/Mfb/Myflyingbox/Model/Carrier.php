@@ -95,7 +95,17 @@ class Mfb_Myflyingbox_Model_Carrier
         Mage::log('Number of offers:'.count($api_quote->offers));
         foreach($api_quote->offers as $k => $api_offer) {
           // Getting the corresponding service
-          
+          $product = $api_offer->product->pick_up;
+          if($api_offer->product->pick_up){
+            
+             $params = array(
+              'street' => $request->getDestStreet(),
+              'city' => $recipient_city
+            );
+            $offer_data['delivery_locations'] = $api_offer->available_delivery_locations($params);
+            //var_dump( $offer_data['delivery_locations']);
+          }
+           
           $offer_uuid = $api_offer->id;
           $offer_product_code = $api_offer->product->code;
           $offer_product_name = $api_offer->product->name;
@@ -135,6 +145,7 @@ class Mfb_Myflyingbox_Model_Carrier
           $rate->setPrice($rate_price);
           
           $this->_result->append($rate);
+
           
         }
 
@@ -189,6 +200,31 @@ class Mfb_Myflyingbox_Model_Carrier
         }
 
         return  $price / 100;
+    }
+
+    public function getTrackingInfo($tracking){
+
+        //Get the tracking shipment
+        $track = Mage::getModel('sales/order_shipment_track')->getCollection()
+        ->addFieldToFilter("track_number",$tracking)
+        ->getFirstItem()
+        ;
+
+        //Get the service for the tracking url
+        $service = Mage::getModel('mfb_myflyingbox/service')->getCollection()
+        ->addFieldToFilter("code",$track->getDescription())
+        ->getFirstItem()
+        ;
+
+        //Set the result
+        $trackingUrl = $service->getTrackingUrl();
+        $finalTrackingUrl = str_replace("TRACKING_NUMBER", $tracking, $trackingUrl);
+        $trackResult = Mage::getModel("shipping/tracking_result_status");
+        $trackResult->setUrl($finalTrackingUrl)
+          ->setTracking($tracking)
+          ->setCarrierTitle($track->getData("title"));
+
+        return $trackResult;
     }
 }
 ?>

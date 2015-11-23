@@ -105,9 +105,14 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
     }
     
     // Automatically create shipment based on order
-    public function newAutoAction() {
+    public function newAutoAction($orderId = null) {
       $shipment = Mage::getModel('mfb_myflyingbox/shipment');
-      $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order_id'));
+      if($orderId){
+        $order = Mage::getModel('sales/order')->load($orderId);
+      }else{
+        $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order_id'));
+      }
+      
       
       $carrier = Mage::getModel('mfb_myflyingbox/carrier');
       
@@ -136,8 +141,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         // Finally, we load a fresh quote
         $shipment->getNewQuote();
       }
-      
-      $this->_redirect('*/*/view', array('id' => $shipment->getId()));
+      if(!$orderId)
+        $this->_redirect('*/*/view', array('id' => $shipment->getId()));
+      else
+        return $shipment->getId();
     }
     
     
@@ -510,21 +517,85 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         }
     }
 
+    public function massBookOrderAction($orderIds){
 
-    public function bookOrderAction()
+        $orderIds = (array)$this->getRequest()->getParam('order_ids'); 
+
+        foreach ($orderIds as $orderId) {
+            try {
+                $shipmentId = $this->newAutoAction($orderId);
+                $this->bookOrderAction($shipmentId);
+                }
+                catch (Mage_Core_Exception $e) {
+                    Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                }
+                catch (Exception $e) {
+                    Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                }
+        }
+
+        $this->_redirect('*/sales_order'); 
+
+    }
+
+    public function bookOrderAction($shipmentId = null)
     {
-        if ($shipment = $this->_initShipment()) {
+        if($shipmentId){
+            $shipment = Mage::getModel('mfb_myflyingbox/shipment')->load($shipmentId);
+            Mage::register('current_shipment', $shipment);
+        }else{
+            $shipment = $this->_initShipment();
+        }
+        if ($shipment) {
             try {
                 $response = false;
-              
-                $offer = Mage::getModel('mfb_myflyingbox/offer')->load($this->getRequest()->getParam('offer_id'));
+
+                //Save magento shipment
+                $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
+                
+                foreach ($order->getAllItems() as $orderItem) {
+                    if ($orderItem->getQtyToShip() && !$orderItem->getIsVirtual()) {
+                        $itemQtys[$orderItem->getId()] = $orderItem->getQtyToShip();
+                    }
+                }
+                $magentoShipment = Mage::getModel('sales/service_order', $order)
+                            ->prepareShipment($itemQtys);
+                $magentoShipment->register();
+                $magentoShipment->save();
+                $order->addStatusHistoryComment('Automatically shipped with Mfb');
+                $order->setIsInProcess(true);
+                Mage::getModel('core/resource_transaction')
+                         ->addObject($shipment)
+                         ->addObject($order)
+                         ->save();
+                
+
+                //save mfb shipment
+                if($this->getRequest()->getParam('offer_id'))
+                    $offer = Mage::getModel('mfb_myflyingbox/offer')->load($this->getRequest()->getParam('offer_id'));
+                else{
+
+                    $quote = Mage::getModel('mfb_myflyingbox/quote')->load($shipment->getId());
+                    
+                    $offer = Mage::getModel('mfb_myflyingbox/offer')->load($quote->getSelectedOffersCollection()->getFirstItem()->getId());
+                    
+                }
+                
                 
                 // Extracting relevant booking data (collection date, relay, offer id)
-                $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
+                if(!$shipmentId)
+                    $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
+                else{
+                    //Recréer booking_data default pour une massaction
+                    $booking_data = $this->setDefaultValuesForMassBookOrder($offer);
+                }
                 
-                $shipment->bookOrder($booking_data);
+                $shipment->bookOrder($booking_data,$magentoShipment);
 
-                $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
+
+
+                if(!$shipmentId)
+                    $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
             }
             catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -532,10 +603,32 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             catch (Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
-            $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
+            if(!$shipmentId)
+                $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
         }
     }
+
+    private function setDefaultValuesForMassBookOrder($offer){
+
+        $booking_data['offer_id'] = $offer->getId();
+
+        if( $offer->getPickup() == true ) {
+             $collection_date = $offer->getCollectionDates();
+             $booking_data['collection_date'] = $collection_date[0]->date ;
+        }
+
+        if( $offer->getRelay() == true ) {
+            $deliveryLocations = $offer->getDeliveryLocations();
+            $booking_data['delivery_location_code'] = $deliveryLocations[0]->code;
+        }
+
+        return $booking_data;
+
+    }
     
+    public function massDownloadLabelsAction () {
+
+    }
     public function downloadLabelsAction () {
       if ($shipment = $this->_initShipment()) {
       

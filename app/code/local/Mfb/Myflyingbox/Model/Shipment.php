@@ -362,7 +362,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     return !empty($api_order_uuid);
   }
 
-  public function bookOrder($booking_data) {
+  public function bookOrder($booking_data, $magentoShipment = null) {
   
     $offer = Mage::getModel('mfb_myflyingbox/offer')->load($booking_data['offer_id']);
     
@@ -419,6 +419,19 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     foreach($this->getParcels() as $parcel) {
       $parcel->setTrackingNumber($api_order->parcels[$i]->reference);
       $parcel->save();
+
+      if($magentoShipment){
+          //Save track on magento shipment
+          Mage::getModel('sales/order_shipment_track')
+                     ->setShipment($magentoShipment)
+                     ->setData('title', $offer->getMfbProductName())
+                     ->setData('number', $api_order->parcels[$i]->reference)
+                     ->setData('carrier_code', "mfb_myflyingbox")
+                     ->setData('description', $offer->getMfbProductCode())
+                     ->setData('order_id', $api_order->id)
+                     ->save();
+      }
+      
     }
   }
 

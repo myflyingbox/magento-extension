@@ -24,6 +24,23 @@ class Mfb_Myflyingbox_Model_Observer
       $store = Mage::app()->getStore($quote->getStoreId());
       $store->setConfig('carriers/mfb_myflyingbox/title', 'Available shipping methods:');
   }
+
+  public function addMassActionMFB($observer)
+  {   
+      $block = $observer->getEvent()->getBlock();
+      if(get_class($block) =='Mage_Adminhtml_Block_Widget_Grid_Massaction'
+          && $block->getRequest()->getControllerName() == 'sales_order')
+      {
+          $block->addItem('mfb_massship', array(
+              'label' => 'MyFlyingBox : Ship orders',
+              'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massBookOrder'),
+          ));
+          $block->addItem('mfb_massprintlabels', array(
+              'label' => 'MyFlyingBox : Print labels',
+              'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massDownloadLabels'),
+          ));
+      }
+  }
 }
 
 ?>
