@@ -299,7 +299,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       );
       $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
       $api_quote = Lce\Resource\Quote::request($params);
-      
+
       $quote = Mage::getModel('mfb_myflyingbox/quote');
       
       $quote_data = array(
@@ -308,9 +308,9 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       );
       
       $quote->addData($quote_data)->save();
-      
+
       $selected_offer = null;
-      
+
       if ($quote->getId() > 0) {
         // Now we create the offers
 
@@ -341,17 +341,25 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
           }
           
           $offer->addData($offer_data)->save();
-          
-          if ($this->getParentOrder()->getShippingMethod() == 'mfb_carrier_'.$offer->getMfbProductCode()) {
-            $selected_offer = $offer;
-          }
-          
+
+            if ($api_offer->product->preset_delivery_location) {
+                $code = 'mfb_myflyingbox_'.$offer->getMfbProductCode()."_relay_";
+
+                if (stripos($this->getParentOrder()->getShippingMethod(), $code) !==false) {
+                    $selected_offer = $offer;
+                }
+            }else{
+                if ($this->getParentOrder()->getShippingMethod() == 'mfb_myflyingbox_'.$offer->getMfbProductCode()) {
+                    $selected_offer = $offer;
+                }
+            }
+
         }
         $this->setApiQuoteUuid($quote->getApiQuoteUuid());
         $this->setApiOfferUuid('');
         if ($selected_offer) $this->setApiOfferUuid($selected_offer->getApiOfferUuid());
       }
-      
+
       $this->save();
       
       return $this;

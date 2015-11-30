@@ -29,7 +29,6 @@ class Mfb_Myflyingbox_Model_Carrier
 
     }
 
-
     public function collectRates(
         Mage_Shipping_Model_Rate_Request $request
     )
@@ -89,64 +88,94 @@ class Mfb_Myflyingbox_Model_Carrier
           )
         );
         
-        Mage::log('MFB: sending quote request to API');
+        Mage::log('MFB: sending quote request to API',null,"mfb_myflyingbox.log");
         $api_quote = Lce\Resource\Quote::request($params);
         
-        Mage::log('Number of offers:'.count($api_quote->offers));
+        Mage::log('Number of offers:'.count($api_quote->offers),null,"mfb_myflyingbox.log");
         foreach($api_quote->offers as $k => $api_offer) {
-          // Getting the corresponding service
-          $product = $api_offer->product->pick_up;
-          if($api_offer->product->pick_up){
-            
-             $params = array(
-              'street' => $request->getDestStreet(),
-              'city' => $recipient_city
-            );
-            $offer_data['delivery_locations'] = $api_offer->available_delivery_locations($params);
-            //var_dump( $offer_data['delivery_locations']);
-          }
-           
-          $offer_uuid = $api_offer->id;
-          $offer_product_code = $api_offer->product->code;
-          $offer_product_name = $api_offer->product->name;
-          $offer_base_price_in_cents = $api_offer->price->amount_in_cents;
-          $offer_currency = $api_offer->total_price->currency;
-          
-          $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer_product_code);
-          
-          // Skipping if this service is not enabled
-          if (!$service || !$service->isEnabled())
-            continue;
-          
-          // Checking any restriction the service
-          if (!$service->destinationSupported($params['recipient']['postal_code'], $params['recipient']['country']))
-            continue;
-          
-          // Determining the price
-          if ( $service->getFlatratePricing() == true ) {
-            // If flatrate pricing enabled, we get the price from the static pricelist
-            $rate_price = $service->flatratePriceForWeight( $weight, $params['recipient']['country'] );
-          } else {
-            // Otherwise, we take the price from the API offer, and make relevant adjustments
-            $rate_price = $this->_getAdjustedPrice($offer_base_price_in_cents);
-          }
-          
-          // If we do not have any price, we do not propose this service.
-          if (!$rate_price) {
-            continue;
-          }
-          
-          $rate = Mage::getModel('shipping/rate_result_method');
-          $rate->setCarrier($this->_code);
-          $rate->setCarrierTitle($service->getCarrierDisplayName());
-          $rate->setMethod($offer_product_code);
-          $rate->setMethodTitle($service->getDisplayName());
-          $rate->setCost(0);
-          $rate->setPrice($rate_price);
-          
-          $this->_result->append($rate);
+            // Getting the corresponding service
 
-          
+
+            $offer_uuid = $api_offer->id;
+            $offer_product_code = $api_offer->product->code;
+            $offer_product_name = $api_offer->product->name;
+            $offer_base_price_in_cents = $api_offer->price->amount_in_cents;
+            $offer_currency = $api_offer->total_price->currency;
+
+            $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer_product_code);
+
+            // Skipping if this service is not enabled
+            if (!$service || !$service->isEnabled())
+                continue;
+
+            // Checking any restriction the service
+            if (!$service->destinationSupported($params['recipient']['postal_code'], $params['recipient']['country']))
+                continue;
+
+            // Determining the price
+            if ($service->getFlatratePricing() == true) {
+                // If flatrate pricing enabled, we get the price from the static pricelist
+                $rate_price = $service->flatratePriceForWeight($weight, $params['recipient']['country']);
+            } else {
+                // Otherwise, we take the price from the API offer, and make relevant adjustments
+                $rate_price = $this->_getAdjustedPrice($offer_base_price_in_cents);
+            }
+
+            // If we do not have any price, we do not propose this service.
+            if (!$rate_price) {
+                continue;
+            }
+
+
+
+            if ($api_offer->product->pick_up) {
+
+                $compteur = 0;
+                $params = array(
+                    'street' => $request->getDestStreet(),
+                    'city' => $recipient_city
+                );
+                $offer_data['delivery_locations'] = $api_offer->available_delivery_locations($params);
+
+                //Construct one shipping method by pickup relay
+                foreach($offer_data['delivery_locations'] as $delivery){
+
+                    if($compteur>10)break;
+                    //var_dump($delivery->company);
+                    $rate = Mage::getModel('shipping/rate_result_method');
+                    $rate->setCarrier($this->_code);
+                    $rate->setCarrierTitle($service->getCarrierDisplayName());
+                    $rate->setMethod($offer_product_code."_relay_".$delivery->code);
+                    $title = $delivery->company." - ". $delivery->city." ". $delivery->street;
+                    $rate->setMethodTitle($title);
+                    $rate->setCost(0);
+                    $rate->setPrice($rate_price);
+
+                    $this->_result->append($rate);
+
+                    $compteur++;
+                    //var_dump($this->_result);exit;
+                }
+
+
+
+
+
+            }else{
+                $rate = Mage::getModel('shipping/rate_result_method');
+                $rate->setCarrier($this->_code);
+                $rate->setCarrierTitle($service->getCarrierDisplayName());
+                $rate->setMethod($offer_product_code);
+                $rate->setMethodTitle($service->getDisplayName());
+                $rate->setCost(0);
+                $rate->setPrice($rate_price);
+
+                $this->_result->append($rate);
+
+            }
+
+
+
         }
 
         return $this->_result;

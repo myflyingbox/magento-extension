@@ -144,7 +144,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
       if(!$orderId)
         $this->_redirect('*/*/view', array('id' => $shipment->getId()));
       else
-        return $shipment->getId();
+        return $shipment;
     }
     
     
@@ -523,8 +523,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
 
         foreach ($orderIds as $orderId) {
             try {
-                $shipmentId = $this->newAutoAction($orderId);
-                $this->bookOrderAction($shipmentId);
+                $shipment = $this->newAutoAction($orderId);
+                $this->bookOrderAction($shipment);
                 }
                 catch (Mage_Core_Exception $e) {
                     Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -538,10 +538,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
 
     }
 
-    public function bookOrderAction($shipmentId = null)
+    public function bookOrderAction($shipment = null)
     {
-        if($shipmentId){
-            $shipment = Mage::getModel('mfb_myflyingbox/shipment')->load($shipmentId);
+        if($shipment){
+            //$shipment = Mage::getModel('mfb_myflyingbox/shipment')->load($shipmentId);
             Mage::register('current_shipment', $shipment);
         }else{
             $shipment = $this->_initShipment();
@@ -550,11 +550,13 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             try {
                 $response = false;
 
+
                 //Save magento shipment
                 $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
                 
                 foreach ($order->getAllItems() as $orderItem) {
                     if ($orderItem->getQtyToShip() && !$orderItem->getIsVirtual()) {
+                        //Change the qty here if you want to make partial shipping
                         $itemQtys[$orderItem->getId()] = $orderItem->getQtyToShip();
                     }
                 }
@@ -574,16 +576,18 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 if($this->getRequest()->getParam('offer_id'))
                     $offer = Mage::getModel('mfb_myflyingbox/offer')->load($this->getRequest()->getParam('offer_id'));
                 else{
+                    $offer = Mage::getModel('mfb_myflyingbox/offer')->getCollection()
+                        ->addFieldToFilter("api_offer_uuid",$shipment->getApiOfferUuid())
+                        ->getFirstItem()
+                    ;
 
-                    $quote = Mage::getModel('mfb_myflyingbox/quote')->load($shipment->getId());
-                    
-                    $offer = Mage::getModel('mfb_myflyingbox/offer')->load($quote->getSelectedOffersCollection()->getFirstItem()->getId());
+
                     
                 }
                 
                 
                 // Extracting relevant booking data (collection date, relay, offer id)
-                if(!$shipmentId)
+                if(!$shipment)
                     $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
                 else{
                     //Recréer booking_data default pour une massaction
@@ -594,7 +598,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
 
 
 
-                if(!$shipmentId)
+                if(!$shipment)
                     $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
             }
             catch (Mage_Core_Exception $e) {
@@ -603,7 +607,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             catch (Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
-            if(!$shipmentId)
+            if(!$shipment)
                 $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
         }
     }

@@ -33,6 +33,15 @@
                     </mfb_myflyingbox>
                 </observers>
             </sales_quote_collect_totals_before>
+            <core_block_abstract_prepare_layout_before>
+            <observers>
+                <mfb_core_block_abstract_prepare_layout_before>
+                    <type>singleton</type>
+                    <class>mfb_myflyingbox/observer</class>
+                    <method>addMassActionMFB</method>
+                </mfb_core_block_abstract_prepare_layout_before>
+            </observers>
+        </core_block_abstract_prepare_layout_before>
         </events>
         <resources>
             <mfb_myflyingbox_setup>
