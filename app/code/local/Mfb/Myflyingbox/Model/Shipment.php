@@ -301,7 +301,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       $api_quote = Lce\Resource\Quote::request($params);
 
       $quote = Mage::getModel('mfb_myflyingbox/quote');
-      
+
       $quote_data = array(
         'api_quote_uuid' => $api_quote->id,
         'shipment_id' => $this->getId()
@@ -439,8 +439,9 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
                      ->setData('order_id', $api_order->id)
                      ->save();
       }
-      
+        $i++;
     }
+
   }
 
 }
