@@ -774,7 +774,22 @@ $table = $this->getConnection()
         null,
         array(),
         'Service Creation Time'
-    ) 
+    )
+    ->addColumn(
+        'insurance',
+        Varien_Db_Ddl_Table::TYPE_SMALLINT, null,
+        array(
+            'nullable'  => false,
+        ),
+        'Insurance'
+    )
+    ->addColumn(
+        'insurance_minimum_amount',
+        Varien_Db_Ddl_Table::TYPE_DECIMAL, '12,4', array(
+        'nullable'  => false,
+    ),
+        "Insurance minimum amount"
+    )
     ->setComment('Service Table');
 $this->getConnection()->createTable($table);
 $this->endSetup();

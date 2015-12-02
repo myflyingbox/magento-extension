@@ -113,6 +113,41 @@ class Mfb_Myflyingbox_Block_Adminhtml_Service_Edit_Tab_Form extends Mage_Adminht
             ),
            )
         );
+
+        $fieldset->addField(
+            'insurance',
+            'select',
+            array(
+                'label' => Mage::helper('mfb_myflyingbox')->__('Insurance'),
+                'name'  => 'insurance',
+                'required'  => true,
+                'class' => 'required-entry',
+
+                'values'=> array(
+                    array(
+                        'value' => 1,
+                        'label' => Mage::helper('mfb_myflyingbox')->__('Yes'),
+                    ),
+                    array(
+                        'value' => 0,
+                        'label' => Mage::helper('mfb_myflyingbox')->__('No'),
+                    ),
+                ),
+            )
+        );
+
+        $fieldset->addField(
+            'insurance_minimum_amount',
+            'text',
+            array(
+                'label' => Mage::helper('mfb_myflyingbox')->__('Insurance minimum amount'),
+                'name'  => 'insurance_minimum_amount',
+                'required'  => true,
+                'class' => 'required-entry',
+
+
+            )
+        );
         
         $fieldset->addField(
             'carrier_display_name',
