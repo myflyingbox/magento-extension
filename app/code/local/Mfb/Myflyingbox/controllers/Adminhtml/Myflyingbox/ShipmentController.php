@@ -496,7 +496,9 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
     }
     public function deleteParcelAction()
     {
-        if ($shipment = $this->_initShipment() && $this->getRequest()->getParam('parcel_id') > 0) {
+        $shipment = $this->_initShipment();
+
+        if ( $shipment && $this->getRequest()->getParam('parcel_id') > 0) {
             try {
                 $response = false;
               
@@ -540,8 +542,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
 
     public function bookOrderAction($shipment = null)
     {
+        $massAction = false;
         if($shipment){
             //$shipment = Mage::getModel('mfb_myflyingbox/shipment')->load($shipmentId);
+            $massAction = true;
             Mage::register('current_shipment', $shipment);
         }else{
             $shipment = $this->_initShipment();
@@ -550,7 +554,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             try {
                 $response = false;
 
-
+                $magentoShipment = null;
                 //Save magento shipment
                 $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
                 
@@ -587,7 +591,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 
                 
                 // Extracting relevant booking data (collection date, relay, offer id)
-                if(!$shipment)
+                if(!$massAction)
                     $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
                 else{
                     //Recréer booking_data default pour une massaction
@@ -597,8 +601,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 $shipment->bookOrder($booking_data,$magentoShipment);
 
 
-
-                if(!$shipment)
+                if(!$massAction)
                     $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
             }
             catch (Mage_Core_Exception $e) {
@@ -607,7 +610,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             catch (Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
-            if(!$shipment)
+            if(!$massAction)
                 $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
         }
     }
