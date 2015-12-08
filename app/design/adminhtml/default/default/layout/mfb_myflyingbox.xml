@@ -264,4 +264,10 @@
         </reference>
       </reference>
     </adminhtml_sales_order_view>
+
+    <adminhtml_myflyingbox_parcel_popup>
+        <reference name="content">
+            <block type="mfb_myflyingbox/adminhtml_shipment_view_tracking_info" name="tracking_info"></block>
+        </reference>
+    </adminhtml_myflyingbox_parcel_popup>
 </layout>
