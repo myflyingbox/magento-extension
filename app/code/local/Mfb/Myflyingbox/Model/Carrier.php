@@ -56,7 +56,7 @@ class Mfb_Myflyingbox_Model_Carrier
         } else {
           $recipient_postcode = false;
         }
-        
+
         // Calculating total weight
         $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
         $weight = 0;

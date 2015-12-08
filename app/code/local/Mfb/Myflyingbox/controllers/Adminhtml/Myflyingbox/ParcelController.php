@@ -436,4 +436,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ParcelController extends Mfb_Myflyin
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/mfb_myflyingbox/parcel');
     }
+
+    public function popupAction(){
+        $this->loadLayout()->renderLayout();
+    }
 }

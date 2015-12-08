@@ -20,6 +20,9 @@
         echo '<strong>';
         echo $parcel->getTrackingNumber();
         echo '</strong> - ';
+        echo ' <a href="#" onclick="popWin(\''. $this->getPopUpUrl($parcel->getId()) .'\',\'trackorder\',\'width=800,height=600,resizable=yes,scrollbars=yes\');"> Details</a> ';
+        $tracking_info = $this->getParcelInfo($parcel);
+        //Exploiter l'affichage
       }
       
       echo $parcel->getLength()."x".$parcel->getWidth()."x".$parcel->getHeight()."cm, ".$parcel->getWeight()."kg";
@@ -30,7 +33,8 @@
       echo " (";
       echo $parcel->getCountryOfOrigin();
       echo ")";
-      
+
+
       echo "</p>";
       
     }?>

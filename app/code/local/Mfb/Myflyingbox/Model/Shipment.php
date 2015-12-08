@@ -276,7 +276,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
           'weight'  => $parcel->getWeight()
         );
       }
-      
+
       // No parcel? We stop now.
       if ( empty($parcels) ) {
         $this->save(); // Saving the emptied quote and offer uuids.
