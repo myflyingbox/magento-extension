@@ -465,6 +465,22 @@ $table = $this->getConnection()
         'Total price (cents)'
     )
     ->addColumn(
+        'insurance_price_in_cents',
+        Varien_Db_Ddl_Table::TYPE_INTEGER, null,
+        array(
+            'nullable'  => false,
+        ),
+        'insurance price (cents)'
+    )
+    ->addColumn(
+        'insurable',
+        Varien_Db_Ddl_Table::TYPE_SMALLINT, null,
+        array(
+            'nullable'  => false,
+        ),
+        'insurable ?'
+    )
+    ->addColumn(
         'currency',
         Varien_Db_Ddl_Table::TYPE_TEXT, 255,
         array(

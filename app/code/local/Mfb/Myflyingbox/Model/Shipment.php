@@ -273,7 +273,9 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
           'length' => $parcel->getLength(),
           'width'  => $parcel->getWidth(),
           'height'  => $parcel->getHeight(),
-          'weight'  => $parcel->getWeight()
+          'weight'  => $parcel->getWeight(),
+          'insured_value' =>  $parcel->getInsurableValue()/100,
+          "insured_currency" => $parcel->getCurrencyCode()
         );
       }
 
@@ -315,7 +317,9 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         // Now we create the offers
 
         foreach($api_quote->offers as $k => $api_offer) {
-        
+
+            Mage::log("getNewQuote : " ,null,"mfb_myflyingbox.log");
+            Mage::log($api_offer ,null,"mfb_myflyingbox.log");
           $offer = Mage::getModel('mfb_myflyingbox/offer');
           
           $offer_data = array(
@@ -328,6 +332,8 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
             'collection_dates' => $api_offer->collection_dates,
             'base_price_in_cents' => $api_offer->price->amount_in_cents,
             'total_price_in_cents' => $api_offer->total_price->amount_in_cents,
+            'insurance_price_in_cents' => $api_offer->insurance_price->amount_in_cents,
+            'insurable' => $api_offer->insurable,
             'currency' => $api_offer->total_price->currency
           );
           
@@ -410,7 +416,8 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     }
     
     foreach( $this->getParcels() as $parcel ) {
-      $params['parcels'][] = array('description' => $parcel->getDescription(), 'value' => $parcel->getValue()/100, 'currency' => $parcel->getCurrencyCode(), 'country_of_origin' => $parcel->getCountryOfOrigin());
+      $params['parcels'][] = array('description' => $parcel->getDescription(), 'value' => $parcel->getValue()/100, 'currency' => $parcel->getCurrencyCode(), 'country_of_origin' => $parcel->getCountryOfOrigin(),
+          'insured_value' =>  $parcel->getInsurableValue()/100,"insured_currency" => $parcel->getCurrencyCode() );
     }
 
     // Placing the order on the API

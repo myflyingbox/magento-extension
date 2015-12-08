@@ -58,7 +58,9 @@ class Mfb_Myflyingbox_Model_Carrier
         }
 
         // Calculating total weight
-        $items = Mage::getSingleton('checkout/session')->getQuote()->getAllItems();
+        $quote = Mage::getSingleton('checkout/session')->getQuote();
+        $items = $quote->getAllItems();
+        $totals = $quote->getTotals();
         $weight = 0;
         foreach($items as $item) {
             $weight += ($item->getWeight() * $item->getQty()) ;
@@ -84,17 +86,19 @@ class Mfb_Myflyingbox_Model_Carrier
             'country' => $recipient_country,
             'is_a_company' => false),
           'parcels' => array(
-            array('length' => $dimension->getLength(), 'height' => $dimension->getHeight(), 'width' => $dimension->getWidth(), 'weight' => $weight)
+            array('length' => $dimension->getLength(), 'height' => $dimension->getHeight(), 'width' => $dimension->getWidth(), 'weight' => $weight,
+                'insured_value' =>  $totals["subtotal"]->getValue(),"insured_currency" => $quote->getQuoteCurrencyCode() )
           )
         );
-        
+
         Mage::log('MFB: sending quote request to API',null,"mfb_myflyingbox.log");
+        Mage::log($params ,null,"mfb_myflyingbox.log");
         $api_quote = Lce\Resource\Quote::request($params);
         
         Mage::log('Number of offers:'.count($api_quote->offers),null,"mfb_myflyingbox.log");
         foreach($api_quote->offers as $k => $api_offer) {
             // Getting the corresponding service
-
+            Mage::log($api_offer ,null,"mfb_myflyingbox.log");
 
             $offer_uuid = $api_offer->id;
             $offer_product_code = $api_offer->product->code;
@@ -126,9 +130,11 @@ class Mfb_Myflyingbox_Model_Carrier
                 continue;
             }
 
+            if($service->getInsurance() && $quote->getBaseSubtotalWithDiscount() > $service->getInsuranceMinimumAmount() && $api_offer->insurable){
+                //$rate_price +=  (float)$api_offer->insurance_price->amount_in_cents/100;
+            }
 
-
-            if ($api_offer->product->pick_up) {
+            if ($service->getRelay()) {
 
                 $compteur = 0;
                 $params = array(
@@ -160,8 +166,9 @@ class Mfb_Myflyingbox_Model_Carrier
 
 
 
-
             }else{
+
+
                 $rate = Mage::getModel('shipping/rate_result_method');
                 $rate->setCarrier($this->_code);
                 $rate->setCarrierTitle($service->getCarrierDisplayName());
