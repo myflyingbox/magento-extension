@@ -600,6 +600,15 @@ $table = $this->getConnection()
         'Declared value (in cents)'
     )
     ->addColumn(
+        'insurable_value',
+        Varien_Db_Ddl_Table::TYPE_INTEGER, null,
+        array(
+            'nullable'  => false,
+            'unsigned'  => true,
+        ),
+        'Insurabled value (in cents)'
+    )
+    ->addColumn(
         'currency',
         Varien_Db_Ddl_Table::TYPE_INTEGER, null,
         array(

@@ -121,6 +121,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         // Shipment is created. Now we create a default parcel
         // Value is stored in cents
         $data["value"] = (int)($order->getSubtotal()*100);
+        $data["insurable_value"] = (int)($order->getSubtotal()*100);
         $a = new Mfb_Myflyingbox_Model_Parcel_Attribute_Source_Currency();
         $data["currency"] = $a->getOptionValue($order->getOrderCurrencyCode());
         $data["shipment_id"] = $shipment->getId();
@@ -475,6 +476,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 
                 // Value is stored in cents
                 $data["value"] = (int)($data["value"]*100);
+                $data["insurable_value"] = (int)($data["value"]*100);
                 $data["shipment_id"] = $shipment->getId();
                 
                 $parcel = Mage::getModel('mfb_myflyingbox/parcel')
