@@ -332,11 +332,13 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
             'collection_dates' => $api_offer->collection_dates,
             'base_price_in_cents' => $api_offer->price->amount_in_cents,
             'total_price_in_cents' => $api_offer->total_price->amount_in_cents,
-            'insurance_price_in_cents' => $api_offer->insurance_price->amount_in_cents,
             'insurable' => $api_offer->{'insurable?'},
             'currency' => $api_offer->total_price->currency
           );
-          
+
+          if($api_offer->insurance_price->amount_in_cents){
+              $offer_data['insurance_price_in_cents'] = $api_offer->insurance_price->amount_in_cents;
+          }
           if ($api_offer->product->preset_delivery_location) {
             // Getting available delivery locations immediately, to make things easier later on
             $params = array(
