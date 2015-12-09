@@ -333,7 +333,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
             'base_price_in_cents' => $api_offer->price->amount_in_cents,
             'total_price_in_cents' => $api_offer->total_price->amount_in_cents,
             'insurance_price_in_cents' => $api_offer->insurance_price->amount_in_cents,
-            'insurable' => $api_offer->insurable,
+            'insurable' => $api_offer->{'insurable?'},
             'currency' => $api_offer->total_price->currency
           );
           
@@ -414,10 +414,19 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       $this->setRelayDeliveryCode($booking_data['delivery_location_code']);
       $this->setRelayDeliveryAddress($offer->getFormattedRelayAddress($booking_data['delivery_location_code']));
     }
+
+    if(isset($booking_data["insurance"]) && $booking_data["insurance"]== "on"){
+        if($offer->getInsurable()){
+            $params['insure_shipment']= true;
+        }else{
+            //levé exception ?
+        }
+    }
     
     foreach( $this->getParcels() as $parcel ) {
       $params['parcels'][] = array('description' => $parcel->getDescription(), 'value' => $parcel->getValue()/100, 'currency' => $parcel->getCurrencyCode(), 'country_of_origin' => $parcel->getCountryOfOrigin(),
-          'insured_value' =>  $parcel->getInsurableValue()/100,"insured_currency" => $parcel->getCurrencyCode() );
+      //    'insured_value' =>  $parcel->getInsurableValue()/100,"insured_currency" => $parcel->getCurrencyCode()
+      );
     }
 
     // Placing the order on the API
@@ -432,6 +441,9 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
 
     $i = 0;
     foreach($this->getParcels() as $parcel) {
+      if(!$api_order->insure_shipment){
+          $parcel->setInsurableValue(0);
+      }
       $parcel->setTrackingNumber($api_order->parcels[$i]->reference);
       $parcel->save();
 

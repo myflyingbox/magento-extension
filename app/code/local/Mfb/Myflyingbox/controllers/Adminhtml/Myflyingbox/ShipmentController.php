@@ -631,6 +631,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             $booking_data['delivery_location_code'] = $deliveryLocations[0]->code;
         }
 
+        if($offer->getInsurable() && $offer->isInsurable($this->getParentOrder()->getBaseSubtotal())){
+            $booking_data["insurance"] = true;
+        }
+
         return $booking_data;
 
     }

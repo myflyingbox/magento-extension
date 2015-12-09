@@ -137,4 +137,28 @@ class Mfb_Myflyingbox_Model_Offer extends Mage_Core_Model_Abstract
         }
       }
     }
+
+    /**
+     *
+     * @param $order_total_amount
+     * @return bool
+     */
+    public function isInsurable($order_total_amount = 0){
+
+        $insurable = false;
+        $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($this->getMfbProductCode());
+        if(!$service)
+            return false;
+
+        $order_total = (int)$order_total_amount;
+        if($order_total === 0)
+            return false;
+
+        $service_insurance_minimum_amount = (int)$service->getInsuranceMinimumAmount();
+
+        if($service->getInsurance() && $order_total > $service_insurance_minimum_amount)
+            $insurable = true;
+
+        return $insurable ;
+    }
 }
