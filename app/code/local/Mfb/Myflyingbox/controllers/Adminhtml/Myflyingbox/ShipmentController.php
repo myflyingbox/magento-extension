@@ -521,7 +521,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         }
     }
 
-    public function massBookOrderAction($orderIds){
+    public function massBookOrderAction($orderIds = null){
+
+        if(!$orderIds)
+            $this->_redirect('*/sales_order');
 
         $orderIds = (array)$this->getRequest()->getParam('order_ids'); 
 
@@ -559,11 +562,18 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 $magentoShipment = null;
                 //Save magento shipment
                 $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
-                
+
+                $massaction_items_limit_count = 0;
                 foreach ($order->getAllItems() as $orderItem) {
                     if ($orderItem->getQtyToShip() && !$orderItem->getIsVirtual()) {
+                        $massaction_items_limit_count++;
                         //Change the qty here if you want to make partial shipping
                         $itemQtys[$orderItem->getId()] = $orderItem->getQtyToShip();
+                    }
+                    if($massAction && $massaction_items_limit_count > 1){
+                        Mage::getSingleton('adminhtml/session')->addError("Mass action can not be used with more than 1 article. You have to do it mannualy.");
+                        return false;
+
                     }
                 }
                 $magentoShipment = Mage::getModel('sales/service_order', $order)
@@ -576,7 +586,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                          ->addObject($shipment)
                          ->addObject($order)
                          ->save();
-                
+
 
                 //save mfb shipment
                 if($this->getRequest()->getParam('offer_id'))
