@@ -476,9 +476,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 
                 // Value is stored in cents
                 $data["value"] = (int)($data["value"]*100);
-                $data["insurable_value"] = (int)($data["value"]*100);
+                $data["insurable_value"] = (int)($data["insurable_value"]*100);
                 $data["shipment_id"] = $shipment->getId();
-                
                 $parcel = Mage::getModel('mfb_myflyingbox/parcel')
                             ->addData($data)
                             ->save();
@@ -491,6 +490,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
             catch (Exception $e) {
+                //@todo : gérer exception
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
                 Mage::getSingleton('adminhtml/session')->addError($this->__('Cannot add parcel to shipment'));
             }
             $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
