@@ -532,6 +532,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             try {
                 $shipment = $this->newAutoAction($orderId);
                 $this->bookOrderAction($shipment);
+                Mage::unregister('current_shipment');
                 }
                 catch (Mage_Core_Exception $e) {
                     Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -564,6 +565,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
 
                 $massaction_items_limit_count = 0;
+                $itemQtys = null;
                 foreach ($order->getAllItems() as $orderItem) {
                     if ($orderItem->getQtyToShip() && !$orderItem->getIsVirtual()) {
                         $massaction_items_limit_count++;
@@ -571,10 +573,15 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                         $itemQtys[$orderItem->getId()] = $orderItem->getQtyToShip();
                     }
                     if($massAction && $massaction_items_limit_count > 1){
-                        Mage::getSingleton('adminhtml/session')->addError("Mass action can not be used with more than 1 article. You have to do it mannualy.");
+                        Mage::getSingleton('adminhtml/session')->addError("Mass action can not be used with more than 1 article. You have to do it mannualy on : ".$order->getIncrementId());
                         return false;
 
                     }
+                }
+                //Mage::log('bookOrderAction $itemQtys',null,"mfb_myflyingbox.log");
+                if(!$itemQtys){
+                    Mage::getSingleton('adminhtml/session')->addError("No items to ship : ".$order->getIncrementId());
+                    return false;
                 }
                 $magentoShipment = Mage::getModel('sales/service_order', $order)
                             ->prepareShipment($itemQtys);
@@ -607,14 +614,17 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                     $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
                 else{
                     //Recréer booking_data default pour une massaction
-                    $booking_data = $this->setDefaultValuesForMassBookOrder($offer);
+                    $booking_data = $this->setDefaultValuesForMassBookOrder($offer,$shipment);
                 }
-                
+
                 $shipment->bookOrder($booking_data,$magentoShipment);
 
+                Mage::getSingleton('adminhtml/session')->addSuccess("Order was successfully shipped : ".$order->getIncrementId());
 
                 if(!$massAction)
                     $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
+                else
+                    return true;
             }
             catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
@@ -627,7 +637,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         }
     }
 
-    private function setDefaultValuesForMassBookOrder($offer){
+    private function setDefaultValuesForMassBookOrder($offer, $shipment){
+
 
         $booking_data['offer_id'] = $offer->getId();
 
@@ -640,8 +651,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             $deliveryLocations = $offer->getDeliveryLocations();
             $booking_data['delivery_location_code'] = $deliveryLocations[0]->code;
         }
-
-        if($offer->getInsurable() && $offer->isInsurable($this->getParentOrder()->getBaseSubtotal())){
+        if($offer->getInsurable() && $offer->isInsurable($shipment->getParentOrder()->getBaseSubtotal())){
             $booking_data["insurance"] = true;
         }
 
