@@ -28,6 +28,8 @@
       echo $parcel->getLength()."x".$parcel->getWidth()."x".$parcel->getHeight()."cm, ".$parcel->getWeight()."kg";
       echo " | ";
       echo $parcel->getFormattedValue();
+      echo " | Assur. value :";
+      echo $parcel->getInsurableValue()/100;
       echo " | ";
       echo $parcel->getDescription();
       echo " (";
@@ -70,6 +72,10 @@
               <option value="2">USD ($)</option>
               <option value="3">GBP (£)</option>
             </select>
+          </span>
+          <span class="field-row">
+            <label for="parcel_insurable_value"><?php echo Mage::helper('mfb_myflyingbox')->__('Insurable value:');?></label>
+            <input id="parcel_insurable_value" type='text' class="input-text required-field validate-number" style="width: 50px;"  name="parcel[insurable_value]" value="" placeholder="<?php echo Mage::helper('mfb_myflyingbox')->__('insurable value');?>"/>
           </span>
           
           <span class="field-row">

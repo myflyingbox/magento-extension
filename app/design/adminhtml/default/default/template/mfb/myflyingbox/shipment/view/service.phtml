@@ -16,12 +16,29 @@
             <select id="service-selector" name="offer_id">
             <?php
               foreach($shipment->getLatestQuote()->getOffers() as $offer) {
+                $insurance_text = " ";
+                if($offer->getInsurable()){
+                  $insurance_price = $offer->getInsurancePriceInCents()/100;
+                  $insurance_text = " (assur.: ".$insurance_price." ".$offer->getCurrency().")";
+                }
                 echo '<option value="'.$offer->getId().'"';
-                if ($this->getApiOfferUuid() == $offer->getApiOfferUuid()) echo ' selected';
-                echo '>'.$offer->getMfbProductCode().' - '.$offer->formattedPrice().'</option>';
+                if ($shipment->getApiOfferUuid() == $offer->getApiOfferUuid()) echo ' selected';
+                echo '>'.$offer->getMfbProductCode().' - '.$offer->formattedPrice(). $insurance_text. '</option>';
               }
             ?>
             </select>
+            <?php foreach($shipment->getLatestQuote()->getOffers() as $offer) :?>
+              <?php if($offer->getInsurable()):?>
+                <?php
+                    $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer->getMfbProductCode());
+                ?>
+                <div class="offer_<?php echo $offer->getId(); ?> insurance" style="display: none;">
+                  <label><?php echo Mage::helper('mfb_myflyingbox')->__('Insurable ?'); ?></label>
+                  <input name="offer_<?php echo $offer->getId()?>[insurance]" type="checkbox" <?php if(!$service->getInsurance()) echo "disabled" ?> <?php if($offer->isInsurable($shipment->getParentOrder()->getBaseSubtotal()))echo "checked" ?> (>
+
+                </div>
+              <?php endif;?>
+            <?php endforeach ?>
         </span>
 
         <?php
@@ -66,7 +83,10 @@
                 <select name="offer_<?php echo $offer->getId();?>[delivery_location_code]" class="delivery-location-selector">
                 <?php
                 foreach ( $offer->getDeliveryLocations() as $location ) {
-                  echo "<option value='".$location->code."'>";
+                  echo "<option value='".$location->code."'";
+                  $order_shipping_code = end(explode("_", $shipment->getParentOrder()->getShippingMethod()));
+                   if ( $order_shipping_code == $location->code) echo ' selected';
+                  echo ">";
                   echo $location->code . ' ' . $location->company . ' / ' . $location->street . ' / ' . $location->postal_code.' '.$location->city;
                   echo "</option>";
                 }
@@ -76,6 +96,9 @@
             </div>
           <?php
             }
+            ?>
+
+          <?php
           }
         ?>
           <div class="f-left">
@@ -127,12 +150,15 @@
   var offer_id = $F('service-selector');
   $$('div#shipment_service_block div.collection_dates.offer_'+offer_id).invoke('show');
   $$('div#shipment_service_block div.delivery_locations.offer_'+offer_id).invoke('show');
+  $$('div#shipment_service_block div.insurance.offer_'+offer_id).invoke('show');
 
   Event.observe($('service-selector'), 'change', function(){
     $$('div#shipment_service_block div.collection_dates').invoke('hide');
     $$('div#shipment_service_block div.delivery_locations').invoke('hide');
+    $$('div#shipment_service_block div.insurance').invoke('hide');
     var offer_id = $F('service-selector');
     $$('div#shipment_service_block div.collection_dates.offer_'+offer_id).invoke('show');
     $$('div#shipment_service_block div.delivery_locations.offer_'+offer_id).invoke('show');
+    $$('div#shipment_service_block div.insurance.offer_'+offer_id).invoke('show');
   });
 </script>
