@@ -319,7 +319,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         foreach($api_quote->offers as $k => $api_offer) {
 
             Mage::log("getNewQuote : " ,null,"mfb_myflyingbox.log");
-            Mage::log($api_offer ,null,"mfb_myflyingbox.log");
+            //Mage::log($api_offer ,null,"mfb_myflyingbox.log");
           $offer = Mage::getModel('mfb_myflyingbox/offer');
           
           $offer_data = array(
@@ -336,7 +336,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
             'currency' => $api_offer->total_price->currency
           );
 
-          if($api_offer->insurance_price->amount_in_cents){
+          if(isset($api_offer->insurance_price->amount_in_cents)){
               $offer_data['insurance_price_in_cents'] = $api_offer->insurance_price->amount_in_cents;
           }
           if ($api_offer->product->preset_delivery_location) {
