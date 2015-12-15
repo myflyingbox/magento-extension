@@ -266,6 +266,8 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       // We reset the data whatever happens next.
       $this->setApiOfferUuid('');
       $this->setApiQuoteUuid('');
+
+      $this->save();
       
       $parcels = array();
       foreach( $this->getParcels() as $parcel ) {

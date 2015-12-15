@@ -647,10 +647,17 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
              $collection_date = $offer->getCollectionDates();
              $booking_data['collection_date'] = $collection_date[0]->date ;
         }
+        $order = Mage::getModel('sales/order')->load($shipment->getOrderId());
 
         if( $offer->getRelay() == true ) {
             $deliveryLocations = $offer->getDeliveryLocations();
-            $booking_data['delivery_location_code'] = $deliveryLocations[0]->code;
+            foreach($deliveryLocations as $deliveryLocation){
+                //todo : get construced name throug helper
+                if("mfb_myflyingbox_".$offer->getData("mfb_product_code")."_relay_".$deliveryLocation->code == $order->getShippingMethod()){
+                    $booking_data['delivery_location_code'] = $deliveryLocation->code;
+                }
+            }
+
         }
         if($offer->getInsurable() && $offer->isInsurable($shipment->getParentOrder()->getBaseSubtotal())){
             $booking_data["insurance"] = true;
