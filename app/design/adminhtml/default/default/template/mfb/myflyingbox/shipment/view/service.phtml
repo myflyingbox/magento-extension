@@ -28,17 +28,15 @@
             ?>
             </select>
             <?php foreach($shipment->getLatestQuote()->getOffers() as $offer) :?>
-              <?php if($offer->getInsurable()):?>
                 <?php
                     $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer->getMfbProductCode());
                 ?>
                 <div class="offer_<?php echo $offer->getId(); ?> insurance" style="display: none;">
                   <label><?php echo Mage::helper('mfb_myflyingbox')->__('Insurable ?'); ?></label>
-                  <input name="offer_<?php echo $offer->getId()?>[insurance]" type="checkbox" <?php if(!$service->getInsurance()) echo "disabled" ?> <?php if($offer->isInsurable($shipment->getParentOrder()->getBaseSubtotal()))echo "checked" ?> (>
+                  <input name="offer_<?php echo $offer->getId()?>[insurance]" type="checkbox" <?php if(!$offer->getInsurable()) echo "disabled" ?> <?php if($offer->getInsurable() && $offer->shouldBeInsuredByDefault($shipment->getParentOrder()->getBaseSubtotal()))echo "checked" ?> (>
 
                 </div>
-              <?php endif;?>
-            <?php endforeach ?>
+            <?php endforeach; ?>
         </span>
 
         <?php
