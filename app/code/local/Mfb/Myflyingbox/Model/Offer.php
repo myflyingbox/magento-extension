@@ -143,7 +143,7 @@ class Mfb_Myflyingbox_Model_Offer extends Mage_Core_Model_Abstract
      * @param $order_total_amount
      * @return bool
      */
-    public function isInsurable($order_total_amount = 0){
+    public function shouldBeInsuredByDefault($order_total_amount = 0){
 
         $insurable = false;
         $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($this->getMfbProductCode());

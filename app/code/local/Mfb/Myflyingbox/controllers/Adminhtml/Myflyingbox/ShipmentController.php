@@ -586,29 +586,16 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 }
                 $magentoShipment = Mage::getModel('sales/service_order', $order)
                             ->prepareShipment($itemQtys);
-                $magentoShipment->register();
-                $magentoShipment->save();
-                $order->addStatusHistoryComment('Automatically shipped with Mfb');
-                $order->setIsInProcess(true);
-                Mage::getModel('core/resource_transaction')
-                         ->addObject($shipment)
-                         ->addObject($order)
-                         ->save();
-
-
+                            
+                            
                 //save mfb shipment
                 if($this->getRequest()->getParam('offer_id'))
                     $offer = Mage::getModel('mfb_myflyingbox/offer')->load($this->getRequest()->getParam('offer_id'));
                 else{
                     $offer = Mage::getModel('mfb_myflyingbox/offer')->getCollection()
                         ->addFieldToFilter("api_offer_uuid",$shipment->getApiOfferUuid())
-                        ->getFirstItem()
-                    ;
-
-
-                    
+                        ->getFirstItem();
                 }
-                
                 
                 // Extracting relevant booking data (collection date, relay, offer id)
                 if(!$massAction)
@@ -618,7 +605,20 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                     $booking_data = $this->setDefaultValuesForMassBookOrder($offer,$shipment);
                 }
 
-                $shipment->bookOrder($booking_data,$magentoShipment);
+                $shipment->bookOrder($booking_data);
+
+
+                $magentoShipment->register();
+                $magentoShipment->save();
+                $order->addStatusHistoryComment('Automatically shipped with Mfb');
+                $order->setIsInProcess(true);
+                Mage::getModel('core/resource_transaction')
+                         ->addObject($shipment)
+                         ->addObject($order)
+                         ->save();
+
+                // If all went well, we can link the tracking data to the Magento Shipment
+                $shipment->registerTrackingData($magentoShipment);
 
                 Mage::getSingleton('adminhtml/session')->addSuccess("Order was successfully shipped : ".$order->getIncrementId());
 
@@ -659,7 +659,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             }
 
         }
-        if($offer->getInsurable() && $offer->isInsurable($shipment->getParentOrder()->getBaseSubtotal())){
+        if($offer->getInsurable() && $offer->shouldBeInsuredByDefault($shipment->getParentOrder()->getBaseSubtotal())){
             $booking_data["insurance"] = true;
         }
 

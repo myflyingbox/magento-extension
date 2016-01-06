@@ -320,7 +320,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
 
         foreach($api_quote->offers as $k => $api_offer) {
 
-            Mage::log("getNewQuote : " ,null,"mfb_myflyingbox.log");
+            Mage::log("getNewQuote from API: " ,null,"mfb_myflyingbox.log");
             //Mage::log($api_offer ,null,"mfb_myflyingbox.log");
           $offer = Mage::getModel('mfb_myflyingbox/offer');
           
@@ -380,7 +380,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     return !empty($api_order_uuid);
   }
 
-  public function bookOrder($booking_data, $magentoShipment = null) {
+  public function bookOrder($booking_data) {
   
     $offer = Mage::getModel('mfb_myflyingbox/offer')->load($booking_data['offer_id']);
     
@@ -423,7 +423,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
         if($offer->getInsurable()){
             $params['insure_shipment']= true;
         }else{
-            //levé exception ?
+            //lever exception ?
         }
     }
     
@@ -444,27 +444,40 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
     $this->save();
 
     $i = 0;
+    // Saving tracking reference
     foreach($this->getParcels() as $parcel) {
       if(!$api_order->insure_shipment){
           $parcel->setInsurableValue(0);
       }
       $parcel->setTrackingNumber($api_order->parcels[$i]->reference);
       $parcel->save();
-
-      if($magentoShipment){
-          //Save track on magento shipment
-          Mage::getModel('sales/order_shipment_track')
-                     ->setShipment($magentoShipment)
-                     ->setData('title', $offer->getMfbProductName())
-                     ->setData('number', $api_order->parcels[$i]->reference)
-                     ->setData('carrier_code', "mfb_myflyingbox")
-                     ->setData('description', $offer->getMfbProductCode())
-                     ->setData('order_id', $api_order->id)
-                     ->save();
-      }
-        $i++;
+      $i++;
     }
 
   }
+  
+  
+  // After the shipment has been booked, we can register the tracking data on the standard Magento Shipment object
+  public function registerTrackingData($magentoShipment){
+      $offer = $this->getSelectedOffer();
+      // Setting the shipment service title based on service configuration, is available
+      $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer->getMfbProductCode());
+      $service_title = $service ? $service->getCarrierDisplayName() : $offer->getMfbProductName();
 
+      Mage::log($offer ,null,"mfb_myflyingbox.log");
+
+      foreach($this->getParcels() as $parcel) {
+          Mage::log($parcel ,null,"mfb_myflyingbox.log");
+          //Save tracking on magento shipment
+          Mage::getModel('sales/order_shipment_track')
+                     ->setShipment($magentoShipment)
+                     ->setData('title', $service_title)
+                     ->setData('number', $parcel->getTrackingNumber())
+                     ->setData('carrier_code', "mfb_myflyingbox")
+                     ->setData('description', $offer->getMfbProductCode())
+                     ->setData('order_id', $this->getApiOrderUuid())
+                     ->save();
+
+      }
+  }
 }
