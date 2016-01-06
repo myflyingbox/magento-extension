@@ -810,10 +810,11 @@ $table = $this->getConnection()
     )
     ->addColumn(
         'insurance_minimum_amount',
-        Varien_Db_Ddl_Table::TYPE_DECIMAL, '12,4', array(
-        'nullable'  => false,
-    ),
-        "Insurance minimum amount"
+        Varien_Db_Ddl_Table::TYPE_DECIMAL, '12,4',
+        array(
+          'nullable'  => false,
+        ),
+        'Insurance minimum amount'
     )
     ->setComment('Service Table');
 $this->getConnection()->createTable($table);
