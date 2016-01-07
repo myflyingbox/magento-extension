@@ -35,10 +35,11 @@ class Mfb_Myflyingbox_Model_Observer
               'label' => 'MyFlyingBox : Ship orders',
               'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massBookOrder'),
           ));
-          $block->addItem('mfb_massprintlabels', array(
-              'label' => 'MyFlyingBox : Print labels',
-              'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massDownloadLabels'),
-          ));
+          // TODO: UNCOMMENT WHEN MASS LABEL DOWNLOAD SUPPORTED BY API!!
+          //~ $block->addItem('mfb_massprintlabels', array(
+              //~ 'label' => 'MyFlyingBox : Print labels',
+              //~ 'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massDownloadLabels'),
+          //~ ));
       }
   }
 }
