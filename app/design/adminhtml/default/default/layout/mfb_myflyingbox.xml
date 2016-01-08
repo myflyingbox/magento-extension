@@ -267,7 +267,7 @@
 
     <adminhtml_myflyingbox_parcel_popup>
         <reference name="content">
-            <block type="mfb_myflyingbox/adminhtml_shipment_view_tracking_info" name="tracking_info"></block>
+            <block type="mfb_myflyingbox/adminhtml_shipment_view_tracking_info" name="tracking_info"  template="mfb/myflyingbox/shipment/view/tracking/info.phtml"></block>
         </reference>
     </adminhtml_myflyingbox_parcel_popup>
 </layout>

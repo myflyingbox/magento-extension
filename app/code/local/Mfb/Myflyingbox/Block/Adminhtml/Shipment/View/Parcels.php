@@ -24,7 +24,7 @@ class Mfb_Myflyingbox_Block_Adminhtml_Shipment_View_Parcels extends Mage_Adminht
 
     public function getPopUpUrl($parcel_id)
     {
-        return $this->getUrl('*/myflyingbox_parcel/popup', array('parcel_id' => $parcel_id, 'id'=>$this->getShipment()->getId()));
+        return $this->getUrl('*/myflyingbox_parcel/popup', array('id' => $parcel_id, 'shipment_id'=>$this->getShipment()->getId()));
     }
 
 }

@@ -146,4 +146,11 @@ class Mfb_Myflyingbox_Model_Parcel extends Mage_Core_Model_Abstract
       return $attr->getOptionText($this->getCurrency());
     }
     
+    public function getApiTrackingData() {
+      $shipment = $this->getParentShipment();
+      $tracking_data = $shipment->getApiTrackingData($this->getTrackingNumber());
+
+      return $tracking_data;
+    }
+    
 }

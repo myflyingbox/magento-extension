@@ -98,6 +98,9 @@
     </div>
     <?php }?>
 </div>
-<script type="text/javascript">
-    var parcelsForm = new varienForm('parcel-form');
-</script>
+
+<?php if ($this->getShipment()->canEdit()): ?>
+  <script type="text/javascript">
+      var parcelsForm = new varienForm('parcel-form');
+  </script>
+<?php endif; ?>

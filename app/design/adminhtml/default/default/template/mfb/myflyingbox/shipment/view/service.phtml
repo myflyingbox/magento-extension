@@ -144,6 +144,7 @@
       
     } ?>
 </div>
+<?php if (!$shipment->isBooked()): ?>
 <script type="text/javascript">
   var offer_id = $F('service-selector');
   $$('div#shipment_service_block div.collection_dates.offer_'+offer_id).invoke('show');
@@ -160,3 +161,4 @@
     $$('div#shipment_service_block div.insurance.offer_'+offer_id).invoke('show');
   });
 </script>
+<?php endif; ?>

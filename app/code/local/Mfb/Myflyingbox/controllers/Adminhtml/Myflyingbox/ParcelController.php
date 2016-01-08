@@ -36,6 +36,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ParcelController extends Mfb_Myflyin
         if ($parcelId) {
             $parcel->load($parcelId);
         }
+        Mage::log($parcel, null, 'mfb_myflyingbox.log');
         Mage::register('current_parcel', $parcel);
         return $parcel;
     }
@@ -438,6 +439,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ParcelController extends Mfb_Myflyin
     }
 
     public function popupAction(){
+        $this->_initParcel();
         $this->loadLayout()->renderLayout();
     }
 }

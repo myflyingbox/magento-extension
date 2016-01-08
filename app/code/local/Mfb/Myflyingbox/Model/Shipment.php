@@ -464,10 +464,7 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
       $service = Mage::getModel('mfb_myflyingbox/service')->loadByCode($offer->getMfbProductCode());
       $service_title = $service ? $service->getCarrierDisplayName() : $offer->getMfbProductName();
 
-      Mage::log($offer ,null,"mfb_myflyingbox.log");
-
       foreach($this->getParcels() as $parcel) {
-          Mage::log($parcel ,null,"mfb_myflyingbox.log");
           //Save tracking on magento shipment
           Mage::getModel('sales/order_shipment_track')
                      ->setShipment($magentoShipment)
@@ -479,5 +476,25 @@ class Mfb_Myflyingbox_Model_Shipment extends Mage_Core_Model_Abstract
                      ->save();
 
       }
+  }
+  
+  public function getParcelIndex($tracking_number){
+    $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+    $api_order = Lce\Resource\Order::find($this->getApiOrderUuid());
+    foreach($api_order->parcels as $key => $parcel) {
+      if ($parcel->reference == $tracking_number)
+        return $key;
+    }
+    return 0;
+  }
+  
+  public function getApiTrackingData($tracking_number = null){
+    $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+    $order_uuid = $this->getApiOrderUuid();
+    $api_order = Lce\Resource\Order::find($order_uuid);
+    $tracking = $api_order->tracking();
+    
+    $index = $this->getParcelIndex($tracking_number);
+    return $tracking[$index]->events;
   }
 }
