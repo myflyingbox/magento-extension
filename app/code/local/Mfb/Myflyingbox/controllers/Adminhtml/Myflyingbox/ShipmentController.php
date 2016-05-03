@@ -1,14 +1,14 @@
 <?php
 /**
  * Mfb_Myflyingbox extension
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the MIT License
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/mit-license.php
- * 
+ *
  * @category       Mfb
  * @package        Mfb_Myflyingbox
  * @copyright      Copyright (c) 2015
@@ -103,7 +103,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         }
         $this->renderLayout();
     }
-    
+
     // Automatically create shipment based on order
     public function newAutoAction($orderId = null) {
       $shipment = Mage::getModel('mfb_myflyingbox/shipment');
@@ -112,10 +112,10 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
       }else{
         $order = Mage::getModel('sales/order')->load($this->getRequest()->getParam('order_id'));
       }
-      
-      
+
+
       $carrier = Mage::getModel('mfb_myflyingbox/carrier');
-      
+
       $shipment->populateFromOrder( $order )->save();
       if ($shipment->getId() > 0) {
         // Shipment is created. Now we create a default parcel
@@ -128,17 +128,17 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         $data["weight"] = $order->getWeight();
         $data["description"] = $carrier->getConfigData('default_parcel_description');
         $data["country_of_origin"] = $carrier->getConfigData('default_country_of_origin');
-        
+
         $dimension = Mage::getModel('mfb_myflyingbox/dimension')->getForWeight((float)$order->getWeight());
-        
+
         $data["length"] = $dimension->getLength();
         $data["width"] = $dimension->getWidth();
         $data["height"] = $dimension->getHeight();
-        
+
         $parcel = Mage::getModel('mfb_myflyingbox/parcel')
                     ->addData($data)
                     ->save();
-        
+
         // Finally, we load a fresh quote
         $shipment->getNewQuote();
       }
@@ -147,8 +147,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
       else
         return $shipment;
     }
-    
-    
+
+
 
     public function viewAction()
     {
@@ -192,7 +192,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 $shipment->addData($data);
                 $shipment->save();
                 $shipment->getNewQuote();
-                
+
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     Mage::helper('mfb_myflyingbox')->__('Shipment was successfully saved')
                 );
@@ -201,7 +201,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                     $this->_redirect('*/*/view', array('id' => $shipment->getId()));
                     return;
                 }
-                
+
                 $this->_redirect('*/*/view', array('id' => $shipment->getId()));
                 return;
             } catch (Mage_Core_Exception $e) {
@@ -463,7 +463,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
     {
         return Mage::getSingleton('admin/session')->isAllowed('sales/mfb_myflyingbox/shipment');
     }
-    
+
     /**
      * Add parcel to shipment
      */
@@ -473,7 +473,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
             try {
                 $response = false;
                 $data = $this->getRequest()->getPost('parcel');
-                
+
                 // Value is stored in cents
                 $data["value"] = (int)($data["value"]*100);
                 $data["insurable_value"] = (int)($data["insurable_value"]*100);
@@ -483,7 +483,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                             ->save();
 
                 $shipment->getNewQuote();
-                
+
                 $this->_redirect('*/*/view', array('id' => $this->getRequest()->getParam('id')));
             }
             catch (Mage_Core_Exception $e) {
@@ -504,7 +504,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         if ( $shipment && $this->getRequest()->getParam('parcel_id') > 0) {
             try {
                 $response = false;
-              
+
                 $parcel = Mage::getModel('mfb_myflyingbox/parcel')
                             ->setId($this->getRequest()->getParam('parcel_id'))->delete();
 
@@ -527,7 +527,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         if(!$orderIds)
             $this->_redirect('*/sales_order');
 
-        $orderIds = (array)$this->getRequest()->getParam('order_ids'); 
+        $orderIds = (array)$this->getRequest()->getParam('order_ids');
 
         foreach ($orderIds as $orderId) {
             try {
@@ -543,7 +543,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 }
         }
 
-        $this->_redirect('*/sales_order'); 
+        $this->_redirect('*/sales_order');
 
     }
 
@@ -586,8 +586,8 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                 }
                 $magentoShipment = Mage::getModel('sales/service_order', $order)
                             ->prepareShipment($itemQtys);
-                            
-                            
+
+
                 //save mfb shipment
                 if($this->getRequest()->getParam('offer_id'))
                     $offer = Mage::getModel('mfb_myflyingbox/offer')->load($this->getRequest()->getParam('offer_id'));
@@ -596,7 +596,7 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
                         ->addFieldToFilter("api_offer_uuid",$shipment->getApiOfferUuid())
                         ->getFirstItem();
                 }
-                
+
                 // Extracting relevant booking data (collection date, relay, offer id)
                 if(!$massAction)
                     $booking_data = $this->getRequest()->getParam('offer_'.$offer->getId());
@@ -666,18 +666,46 @@ class Mfb_Myflyingbox_Adminhtml_Myflyingbox_ShipmentController extends Mfb_Myfly
         return $booking_data;
 
     }
-    
-    public function massDownloadLabelsAction () {
 
+    public function massDownloadLabelsAction () {
+      $shipments_ids = array();
+      $orders_ids = (array)$this->getRequest()->getParam('order_ids');
+
+      foreach($orders_ids as $order_id) {
+
+        $shipment = Mage::getModel('mfb_myflyingbox/shipment')
+                  ->getCollection()
+                  ->addFieldToFilter("order_id", $order_id)
+                  ->setOrder("created_at", "DESC")
+                  ->setPageSize(1)
+                  ->getFirstItem();
+
+        if ($shipment) {
+          $shipments_ids[] = $shipment->getApiOrderUuid();
+        }
+      }
+
+      if (!empty($shipments_ids)) {
+        $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
+        $labels = Lce\Resource\Order::multiple_labels($shipments_ids);
+        $filename = 'MFB-labels.pdf';
+
+        header('Content-type: application/pdf');
+        header("Content-Transfer-Encoding: binary");
+        header('Content-Disposition: attachment; filename="'.$filename.'"');
+        print($labels);
+        die();
+      }
     }
+
     public function downloadLabelsAction () {
       if ($shipment = $this->_initShipment()) {
-      
+
         $api = Mage::helper('mfb_myflyingbox')->getApiInstance();
         $booking = Lce\Resource\Order::find($shipment->getApiOrderUuid());
         $labels_content = $booking->labels();
         $filename = 'labels_'.$booking->id.'.pdf';
-        
+
         header('Content-type: application/pdf');
         header("Content-Transfer-Encoding: binary");
         header('Content-Disposition: attachment; filename="'.$filename.'"');

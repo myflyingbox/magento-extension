@@ -2,7 +2,7 @@
 
 class Mfb_Myflyingbox_Model_Observer
 {
-  
+
   function addOrderViewShipButton($event) {
     $block = $event->getBlock();
 
@@ -14,7 +14,7 @@ class Mfb_Myflyingbox_Model_Observer
         ));
     }
   }
-  
+
   // Maybe could be used to get a better carrier name display?
   public function salesQuoteCollectTotalsBefore(Varien_Event_Observer $observer)
   {
@@ -26,7 +26,7 @@ class Mfb_Myflyingbox_Model_Observer
   }
 
   public function addMassActionMFB($observer)
-  {   
+  {
       $block = $observer->getEvent()->getBlock();
       if(get_class($block) =='Mage_Adminhtml_Block_Widget_Grid_Massaction'
           && $block->getRequest()->getControllerName() == 'sales_order')
@@ -35,11 +35,10 @@ class Mfb_Myflyingbox_Model_Observer
               'label' => 'MyFlyingBox : Ship orders',
               'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massBookOrder'),
           ));
-          // TODO: UNCOMMENT WHEN MASS LABEL DOWNLOAD SUPPORTED BY API!!
-          //~ $block->addItem('mfb_massprintlabels', array(
-              //~ 'label' => 'MyFlyingBox : Print labels',
-              //~ 'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massDownloadLabels'),
-          //~ ));
+          $block->addItem('mfb_massprintlabels', array(
+              'label' => 'MyFlyingBox : Print labels',
+              'url' => Mage::app()->getStore()->getUrl('*/myflyingbox_shipment/massDownloadLabels'),
+          ));
       }
   }
 }

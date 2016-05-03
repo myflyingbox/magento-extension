@@ -2,14 +2,14 @@
 <!--
 /**
  * Mfb_Myflyingbox extension
- * 
+ *
  * NOTICE OF LICENSE
- * 
+ *
  * This source file is subject to the MIT License
  * that is bundled with this package in the file LICENSE.txt.
  * It is also available through the world-wide-web at this URL:
  * http://opensource.org/licenses/mit-license.php
- * 
+ *
  * @category       Mfb
  * @package        Mfb_Myflyingbox
  * @copyright      Copyright (c) 2015
@@ -19,7 +19,7 @@
 <config>
     <modules>
         <Mfb_Myflyingbox>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
         </Mfb_Myflyingbox>
     </modules>
     <global>
