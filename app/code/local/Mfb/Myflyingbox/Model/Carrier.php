@@ -5,25 +5,25 @@ class Mfb_Myflyingbox_Model_Carrier
 {
 
     protected $_code = 'mfb_myflyingbox';
-    
+
     protected $_result = null; // Used to store the list of quotes
-    
-    
+
+
     public function __construct()
     {
       parent::__construct();
 
       require_once(Mage::getBaseDir('lib') . '/Lce/bootstrap.php');
-      
+
       // Check is php-curl is available
       if(!extension_loaded('curl')) print_r("php-curl does not seem te be installed on your system. Please contact your hosting provider. This extension is required for the module to work properly.");
-      
+
       // API Environment
       $env = $this->getConfigData('api_env');
       if ($env != 'staging' && $env != 'production') $env = 'staging';
-      
+
       // Initializing API lib
-      $api = Lce\Lce::configure($this->getConfigData('api_login'), $this->getConfigData('api_password'), $env);
+      $api = Lce\Lce::configure($this->getConfigData('api_login'), $this->getConfigData('api_password'), $env, '2');
       $api->application = "magento-mfb";
       $api->application_version = Mage::getConfig()->getNode()->modules->Mfb_Myflyingbox->version . " (Magento ". Mage::getVersion() .")";
 
@@ -42,14 +42,14 @@ class Mfb_Myflyingbox_Model_Carrier
         } else {
           $recipient_country = false;
         }
-        
+
         // Getting destination city
         if ($request->getDestCity()) {
           $recipient_city = $request->getDestCity();
         } else {
           $recipient_city = false;
         }
-        
+
         // Getting destination postcode
         if ($request->getDestPostcode()) {
           $recipient_postcode = $request->getDestPostcode();
@@ -65,16 +65,16 @@ class Mfb_Myflyingbox_Model_Carrier
         foreach($items as $item) {
             $weight += ($item->getWeight() * $item->getQty()) ;
         }
-        
+
         // We do not proceed further if there is not enough data
         if (!$recipient_city || !$recipient_country || !$recipient_postcode || $weight == 0)
           return $this->_result;
 
         // Now extracting the default parcel size to use
         $dimension = Mage::getModel('mfb_myflyingbox/dimension')->getForWeight($weight);
-        
+
         if (!$dimension) return $this->_result; // If no fitting dimension, we just leave.
-        
+
         $params = array(
           'shipper' => array(
             'city' => $this->getConfigData('shipper_city'),
@@ -94,7 +94,7 @@ class Mfb_Myflyingbox_Model_Carrier
         Mage::log('MFB: sending quote request to API',null,"mfb_myflyingbox.log");
         //Mage::log($params ,null,"mfb_myflyingbox.log");
         $api_quote = Lce\Resource\Quote::request($params);
-        
+
         Mage::log('Number of offers:'.count($api_quote->offers),null,"mfb_myflyingbox.log");
         foreach($api_quote->offers as $k => $api_offer) {
             // Getting the corresponding service
@@ -187,7 +187,7 @@ class Mfb_Myflyingbox_Model_Carrier
         }
 
         return $this->_result;
-        
+
     }
 
     public function getAllowedMethods()
@@ -196,33 +196,33 @@ class Mfb_Myflyingbox_Model_Carrier
             'standard' => 'Standard'
         );
     }
-    
+
     //~ protected function _getDefaultShippingRate(){
         //~ $rate = Mage::getModel('shipping/rate_result_method');
         //~ /* @var $rate Mage_Shipping_Model_Rate_Result_Method */
-//~ 
+//~
         //~ $rate->setCarrier($this->_code);
         //~ /**
          //~ * getConfigData(config_key) returns the configuration value for the
          //~ * carriers/[carrier_code]/[config_key]
          //~ */
         //~ $rate->setCarrierTitle($this->getConfigData('title'));
-//~ 
+//~
         //~ $rate->setMethod('standard');
         //~ $rate->setMethodTitle('Standard');
-//~ 
+//~
         //~ $rate->setPrice(4.99);
         //~ $rate->setCost(0);
-//~ 
+//~
         //~ return $rate;
     //~ }
-    
+
     protected function _getAdjustedPrice($price) {
-    
+
         $increment = (int)$this->getConfigData('price_rounding_increment');
         $surcharge_amount = (int)$this->getConfigData('price_surcharge_static');
         $surcharge_percent = (int)$this->getConfigData('price_surcharge_percent');
-        
+
         if (is_int($surcharge_percent) && $surcharge_percent > 0) {
           $price = $price + ($price * $surcharge_percent / 100);
         }
