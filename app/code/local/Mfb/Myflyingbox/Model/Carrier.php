@@ -153,7 +153,7 @@ class Mfb_Myflyingbox_Model_Carrier
                     $rate->setCarrier($this->_code);
                     $rate->setCarrierTitle($service->getCarrierDisplayName());
                     $rate->setMethod($offer_product_code."_relay_".$delivery->code);
-                    $title = $delivery->company." - ". $delivery->city." ". $delivery->street;
+                    $title = $service->getDisplayName()." - ".$delivery->company." - ". $delivery->city." ". $delivery->street;
                     $rate->setMethodTitle($title);
                     $rate->setCost(0);
                     $rate->setPrice($rate_price);
